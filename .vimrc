@@ -13,7 +13,7 @@ Plugin 'gmarik/Vundle.vim'
 
 " Keep Plugin commands between vundle#begin/end.
 Plugin 'ervandew/supertab'
-Plugin 'Rip-Rip/clang_complete'
+"Plugin 'Rip-Rip/clang_complete'
 Plugin 'tpope/vim-fugitive'
 "Plugin 'kentaroi/cocoa.vim'
 Plugin 'jlanzarotta/bufexplorer'
@@ -25,17 +25,26 @@ Plugin 'kshenoy/vim-signature'
 "Plugin 'juneedahamed/svnj.vim'
 "Plugin 'qstrahl/vim-matchmaker'
 Plugin 'rking/ag.vim'
-"Plugin 'mikewest/vimroom'
 Plugin 'junegunn/goyo.vim'
 "Plugin 'vim-scripts/TextFormat'
 "Plugin 'jerrymarino/xcodebuild.vim'
 "Plugin 'bbchung/clighter'
+"Plugin 'jeaye/color_coded'
+Plugin 'godlygeek/tabular'
+Plugin 'tpope/vim-obsession'
+Plugin 'Valloric/YouCompleteMe'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
+
+" YouCompleteMe Setup
+"set completeopt-=preview
+"let g:ycm_seed_identifiers_with_syntax = 1
+"let g:ycm_autoclose_preview_window_after_insertion = 1
+"let g:ycm_autoclose_preview_window_after_completion = 1
 
 " clang
 let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib'
@@ -122,16 +131,9 @@ fun! Alt()
 endfun
 :command! A :call Alt()
 
-" Global search
-nmap gl :silent Ggrep <C-R>=expand("<cword>")<CR><CR>:vertical bo cwindow<CR>
-:command! -nargs=+ Look :silent Ggrep <args> | vertical bo cwindow
+" Global search (use 50 chars width on the right side)
+nmap gl :silent Ggrep <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
+:command! -nargs=+ Look :silent Ggrep <args> | vertical bo 50 cwindow
 
 " fold ObjC
 nmap [f :so ~/.vim/objcfold.vim<CR>
-
-let g:vimroom_background = 'white'
-
-" read local vimrc
-"if filereadable(".lvimrc")
-"    so .lvimrc
-"endif
