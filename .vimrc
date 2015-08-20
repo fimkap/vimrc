@@ -25,6 +25,7 @@ Plug 'vim-scripts/twilight'
 Plug 'fimkap/newdelek'
 Plug 'kentaroi/cocoa.vim'
 Plug 'rizzatti/dash.vim'
+Plug 'airblade/vim-gitgutter'
 " }}}
 
 call plug#end()
@@ -47,6 +48,7 @@ set expandtab
 set report=1
 set guifont=PT\ Mono:h11
 set pumheight=15            " limit popup menu height
+set updatetime=750
 "set laststatus=1
 
 colorscheme newdelek
@@ -54,6 +56,10 @@ colorscheme newdelek
 "colors seoul256
 "hi! link Conceal Normal
 " }}}
+
+" Git Gutter Setup
+let g:gitgutter_sign_column_always = 1
+let g:gitgutter_highlight_lines    = 1
 
 " Airline Setup {{{
 let g:airline_theme = 'wombat'
