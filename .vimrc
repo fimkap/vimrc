@@ -1,93 +1,33 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
-"let mapleader = ","
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" VIM-PLUG Setup {{{
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+" Automatic installation {{{
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !mkdir -p ~/.vim/autoload
+  silent !curl -fLo ~/.vim/autoload/plug.vim
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  au VimEnter * PlugInstall
+endif
+" }}}
 
-" Keep Plugin commands between vundle#begin/end.
-Plugin 'ervandew/supertab'
-"Plugin 'Rip-Rip/clang_complete'
-Plugin 'tpope/vim-fugitive'
-"Plugin 'kentaroi/cocoa.vim'
-Plugin 'jlanzarotta/bufexplorer'
-"Plugin 'toyamarinyon/vim-swift'
-Plugin 'Keithbsmiley/swift.vim'
-Plugin 'kshenoy/vim-signature'
-"Plugin 'scrooloose/syntastic'
-"Plugin 'terhechte/syntastic'
-"Plugin 'juneedahamed/svnj.vim'
-"Plugin 'qstrahl/vim-matchmaker'
-Plugin 'rking/ag.vim'
-Plugin 'junegunn/goyo.vim'
-"Plugin 'vim-scripts/TextFormat'
-"Plugin 'jerrymarino/xcodebuild.vim'
-"Plugin 'bbchung/clighter'
-"Plugin 'jeaye/color_coded'
-Plugin 'godlygeek/tabular'
-Plugin 'tpope/vim-obsession'
-Plugin 'Valloric/YouCompleteMe'
+call plug#begin('~/.vim/plugged')
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
+" Plugins {{{
+Plug 'Valloric/YouCompleteMe'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-sensible'
+"Plug 'tpope/vim-surround'
+Plug 'godlygeek/tabular'
+"Plug 'bling/vim-airline'
+Plug 'kien/ctrlp.vim'
+"Plug 'junegunn/seoul256.vim'
+Plug 'vim-scripts/twilight'
+Plug 'fimkap/newdelek'
+Plug 'kentaroi/cocoa.vim'
+Plug 'rizzatti/dash.vim'
+" }}}
 
-" YouCompleteMe Setup
-"set completeopt-=preview
-"let g:ycm_seed_identifiers_with_syntax = 1
-"let g:ycm_autoclose_preview_window_after_insertion = 1
-"let g:ycm_autoclose_preview_window_after_completion = 1
-
-" clang
-let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib'
-let g:clang_snippets = 1
-let g:clang_snippets_engine = 'clang_complete'
-"let g:clang_periodic_quickfix = 1
-"let g:clang_complete_copen = 1
-"let g:clang_conceal_snippets=1
-let g:clang_complete_macros = 1
-let g:clang_complete_patterns = 1
-
-nmap <F1> 
-
-" vim signature
-nmap <F2> ]=
-nmap <S-F2> [=
-
-" buf explorer
-nmap <F3> :BufExplorer<CR>
-
-" supertab
-let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
-"let g:SuperTabDefaultCompletionType = '<c-n>'
-
-" SVNJ
-"let g:svnj_username="efimp"
-"let g:svnj_password="efimp"
-
-" syntastic
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"
-"let g:syntastic_enable_signs=1
-"let g:syntastic_objc_config_file = '.clang_complete'
-"let g:syntastic_objc_checker = 'clang'
-"let g:syntastic_objc_compiler = 'clang'
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-""let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-
-"let g:matchmaker_enable_startup = 0
+call plug#end()
 
 set nobackup
 set nowritebackup
@@ -95,21 +35,132 @@ set noswapfile
 set autoread
 set wildmenu
 set ic
+set cpoptions+=$            " dollar sign while changing
 set completeopt=menu
 set hls
 set is
 set diffopt=filler,vertical,iwhite
 set shiftwidth=4
 set tabstop=4
+set softtabstop=4
 set expandtab
 set report=1
 set guifont=PT\ Mono:h11
-colorscheme mydelek
+set pumheight=15            " limit popup menu height
+"set laststatus=1
 
-nmap <S-Right> :cn<CR>
-nmap <S-Left> :cp<CR>
+colorscheme newdelek
+"let g:seoul256_background = 235
+"colors seoul256
+"hi! link Conceal Normal
+" }}}
 
-" Alternate source and header
+" Airline Setup {{{
+let g:airline_theme = 'wombat'
+let g:airline_powerline_fonts = 0
+
+" File Type Settings {{{
+
+" C++
+"au BufNewFile,BufRead *
+"            \ if expand('%:e') =~ '^\(h\|hh\|hxx\|hpp\|ii\|ixx\|ipp\|inl\|txx\|tpp\|tpl\|cc\|cxx\|cpp\)$' |
+"            \   if &ft != 'cpp'                                                                           |
+"            \     set ft=cpp                                                                              |
+"            \   endif                                                                                     |
+"            \ endif
+"
+
+" Syntastic Setup {{{
+
+let g:syntastic_error_symbol = '□'
+let g:syntastic_warning_symbol = '∟'
+"hi! link SyntasticErrorLine Visual
+"hi! link SyntasticWarningLine Visual
+"au VimEnter,ColorScheme * exec 'hi! SyntasticErrorSign guifg=red ctermfg=red ' . s:getbg('SyntasticErrorLine')
+"au VimEnter,ColorScheme * exec 'hi! SyntasticWarningSign guifg=yellow ctermfg=yellow ' . s:getbg('SyntasticWarningLine')
+"au VimEnter,ColorScheme * exec 'hi! SyntasticError ' . s:getbg('SyntasticErrorLine')
+"au VimEnter,ColorScheme * exec 'hi! SyntasticWarning ' . s:getbg('SyntasticWarningLine')
+
+"let g:syntastic_mode_map = { "mode": "active", "passive_filetypes": ["go", "html"] }
+" }}}
+
+
+" YouCompleteMe Setup {{{
+set completeopt-=preview
+let g:ycm_confirm_extra_conf = 0
+"let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+"let g:ycm_semantic_triggers = { 'haskell' : ['.'], 'rust' : ['::', '.'] }
+nnoremap <leader>h :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>e :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <leader>d :YcmCompleter GoToDefinition<CR>
+let g:ycm_semantic_triggers = {
+ \ 'objc' : ['re!\@"\.*"\s',
+ \ 're!\@\w+\.*\w*\s',
+ \ 're!\@\(\w+\.*\w*\)\s',
+ \ 're!\@\(\s*',
+ \ 're!\@\[.*\]\s',
+ \ 're!\@\[\s*',
+ \ 're!\@\{.*\}\s',
+ \ 're!\@\{\s*',
+ \ "re!\@\’.*\’\s",
+ \ '#ifdef ',
+ \ 're!:\s*',
+ \ 're!=\s*',
+ \ 're!,\s*', ],
+ \ }
+" }}}
+
+" CtrlP Setup {{{
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_follow_symlinks = 1
+nnoremap <silent> <space> :CtrlPBuffer<cr>
+" }}}
+
+" ClangFormat Setup {{{
+"let g:clang_format#style_options = {
+"            \ "AccessModifierOffset": -4,
+"            \ "AllowShortLoopsOnASingleLine": "false",
+"            \ "AllowShortBlocksOnASingleLine" : "false",
+"            \ "AllowShortIfStatementsOnASingleLine": "false",
+"            \ "AlwaysBreakTemplateDeclarations": "true",
+"            \ "DerivePointerBinding": "false",
+"            \ "PointerBindsToType": "false",
+"            \ "ColumnLimit": 80,
+"            \ "TabWidth": 4,
+"            \ "Standard": "C++11" }
+"au FileType c,cpp,objc,objcpp noremap  <silent> <buffer> <leader>f :ClangFormat<cr>
+"au FileType c,cpp,objc,objcpp noremap! <silent> <buffer> <leader>f <c-o>:ClangFormat<cr>
+" }}}
+
+" Jedi Setup {{{
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#completions_enabled = 0
+" }}}
+
+
+" Goyo Setup {{{
+"let g:goyo_margin_top = 2
+"let g:goyo_margin_bottom = 2
+
+"function! s:goyo_enter()
+"  silent !tmux set status off
+"endfunction
+"
+"function! s:goyo_leave()
+"  silent !tmux set status on
+"endfunction
+"
+"au! User GoyoEnter
+"au! User GoyoLeave
+"au  User GoyoEnter nested call <SID>goyo_enter()
+"au  User GoyoLeave nested call <SID>goyo_leave()
+"
+"nnoremap <leader>g :Goyo<CR>
+" }}}
+
 fun! Alt()
     let matchs = matchstr(expand("%"),"h$")
     echo matchs 
