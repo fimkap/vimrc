@@ -13,7 +13,9 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " Plugins {{{
-Plug 'Valloric/YouCompleteMe'
+"Plug 'Valloric/YouCompleteMe'
+Plug 'ervandew/supertab'
+Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 "Plug 'tpope/vim-surround'
@@ -26,6 +28,7 @@ Plug 'fimkap/newdelek'
 Plug 'kentaroi/cocoa.vim'
 Plug 'rizzatti/dash.vim'
 Plug 'airblade/vim-gitgutter'
+Plug 'MattesGroeger/vim-bookmarks'
 " }}}
 
 call plug#end()
@@ -59,7 +62,11 @@ colorscheme newdelek
 
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
-let g:gitgutter_highlight_lines    = 1
+"let g:gitgutter_highlight_lines    = 1
+highlight GitGutterAdd guibg=#00875f guifg=#00875f
+highlight GitGutterChange guibg=#df00ff guifg=#df00ff
+highlight GitGutterDelete guibg=#ff0000 guifg=#ff0000
+highlight GitGutterChangeDelete guibg=#00afff guifg=#00afff
 
 " Airline Setup {{{
 let g:airline_theme = 'wombat'
@@ -90,6 +97,19 @@ let g:syntastic_warning_symbol = '∟'
 "let g:syntastic_mode_map = { "mode": "active", "passive_filetypes": ["go", "html"] }
 " }}}
 
+" clang
+let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib'
+let g:clang_snippets = 1
+let g:clang_snippets_engine = 'clang_complete'
+"let g:clang_periodic_quickfix = 1
+"let g:clang_complete_copen = 1
+"let g:clang_conceal_snippets=1
+let g:clang_complete_macros = 1
+let g:clang_complete_patterns = 1
+
+" supertab
+let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
+"let g:SuperTabDefaultCompletionType = '<c-n>'
 
 " YouCompleteMe Setup {{{
 set completeopt-=preview
