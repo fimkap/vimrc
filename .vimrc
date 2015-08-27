@@ -18,6 +18,8 @@ Plug 'ervandew/supertab'
 Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-unimpaired'
 "Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
 "Plug 'bling/vim-airline'
@@ -29,6 +31,7 @@ Plug 'kentaroi/cocoa.vim'
 Plug 'rizzatti/dash.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
+Plug 'scrooloose/syntastic'
 " }}}
 
 call plug#end()
@@ -49,7 +52,7 @@ set tabstop=4
 set softtabstop=4
 set expandtab
 set report=1
-set guifont=PT\ Mono:h11
+set guifont=PT\ Mono:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
 "set laststatus=1
@@ -84,9 +87,22 @@ let g:airline_powerline_fonts = 0
 "
 
 " Syntastic Setup {{{
-
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+"
+let g:syntastic_enable_signs=1
+"let g:syntastic_objc_config_file = '.clang_complete'
+""let g:syntastic_objc_checkers = ['clang']
+let g:syntastic_objc_compiler = 'clang'
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
 let g:syntastic_error_symbol = '□'
-let g:syntastic_warning_symbol = '∟'
+let g:syntastic_warning_symbol = '▲'
+
 "hi! link SyntasticErrorLine Visual
 "hi! link SyntasticWarningLine Visual
 "au VimEnter,ColorScheme * exec 'hi! SyntasticErrorSign guifg=red ctermfg=red ' . s:getbg('SyntasticErrorLine')
@@ -211,6 +227,8 @@ endfun
 " Global search (use 50 chars width on the right side)
 nmap gl :silent Ggrep <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
 :command! -nargs=+ Look :silent Ggrep <args> | vertical bo 50 cwindow
+
+nmap gb :call ClangUpdateQuickFix()<CR>: cwindow<CR>
 
 " fold ObjC
 nmap [f :so ~/.vim/objcfold.vim<CR>
