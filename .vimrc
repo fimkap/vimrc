@@ -32,6 +32,8 @@ Plug 'rizzatti/dash.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'scrooloose/syntastic'
+Plug 'b4winckler/vim-objc'
+Plug 'vimwiki/vimwiki'
 " }}}
 
 call plug#end()
@@ -55,6 +57,7 @@ set report=1
 set guifont=PT\ Mono:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
+let c_no_curly_error=1
 "set laststatus=1
 
 colorscheme newdelek
@@ -98,10 +101,13 @@ let g:syntastic_enable_signs=1
 let g:syntastic_objc_compiler = 'clang'
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
+let g:syntastic_objc_remove_include_errors = 0
 "let g:syntastic_check_on_open = 1
 "let g:syntastic_check_on_wq = 0
 let g:syntastic_error_symbol = '□'
-let g:syntastic_warning_symbol = '▲'
+let g:syntastic_warning_symbol = '»'
+
+highlight SyntasticWarningSign guifg=Black guibg=yellow
 
 "hi! link SyntasticErrorLine Visual
 "hi! link SyntasticWarningLine Visual
@@ -176,6 +182,11 @@ nnoremap <silent> <space> :CtrlPBuffer<cr>
 "au FileType c,cpp,objc,objcpp noremap  <silent> <buffer> <leader>f :ClangFormat<cr>
 "au FileType c,cpp,objc,objcpp noremap! <silent> <buffer> <leader>f <c-o>:ClangFormat<cr>
 " }}}
+
+" Bookmarks setup
+"let g:bookmark_save_per_working_dir = 1
+"let g:bookmark_auto_save = 1
+highlight BookmarkSign guifg=DarkGoldenrod2
 
 " Jedi Setup {{{
 let g:jedi#auto_vim_configuration = 0
