@@ -5,6 +5,7 @@ source $VIMRUNTIME/mswin.vim
 behave mswin
 let $PATH = 'C:\utils; C:\jsctags;' . $PATH
 "autocmd BufRead  */VC/include/** setfiletype cpp
+" comment
 set nobackup
 set nowritebackup
 set noswapfile
