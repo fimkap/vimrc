@@ -34,6 +34,7 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'scrooloose/syntastic'
 Plug 'b4winckler/vim-objc'
 Plug 'vimwiki/vimwiki'
+Plug 'qstrahl/vim-matchmaker'
 " }}}
 
 call plug#end()
@@ -162,7 +163,10 @@ let g:ycm_semantic_triggers = {
 " }}}
 
 " CtrlP Setup {{{
-let g:ctrlp_working_path_mode = 0
+let g:ctrlp_user_command = 'ag %s -i -l --nocolor --nogroup --hidden -g ""'
+let g:ctrlp_working_path_mode = 'r'
+let g:ctrlp_by_filename = 1
+let g:ctrlp_max_files = 10000
 let g:ctrlp_follow_symlinks = 1
 nnoremap <silent> <space> :CtrlPBuffer<cr>
 " }}}
@@ -187,12 +191,6 @@ nnoremap <silent> <space> :CtrlPBuffer<cr>
 "let g:bookmark_save_per_working_dir = 1
 "let g:bookmark_auto_save = 1
 highlight BookmarkSign guifg=DarkGoldenrod2
-
-" Jedi Setup {{{
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#completions_enabled = 0
-" }}}
-
 
 " Goyo Setup {{{
 "let g:goyo_margin_top = 2
@@ -239,7 +237,11 @@ endfun
 nmap gl :silent Ggrep <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
 :command! -nargs=+ Look :silent Ggrep <args> | vertical bo 50 cwindow
 
-nmap gb :call ClangUpdateQuickFix()<CR>: cwindow<CR>
+nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
+
+"nmap gb :call ClangUpdateQuickFix()<CR>: cwindow<CR>
 
 " fold ObjC
-nmap [f :so ~/.vim/objcfold.vim<CR>
+nmap [z :so ~/.vim/objcfold.vim<CR>zr
+
+highlight Matchmaker guibg=aquamarine1
