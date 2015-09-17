@@ -31,10 +31,11 @@ Plug 'kentaroi/cocoa.vim'
 Plug 'rizzatti/dash.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
-Plug 'scrooloose/syntastic'
+Plug 'fimkap/syntastic'
 Plug 'b4winckler/vim-objc'
 Plug 'vimwiki/vimwiki'
 Plug 'qstrahl/vim-matchmaker'
+Plug 'gregsexton/gitv'
 " }}}
 
 call plug#end()
@@ -100,6 +101,8 @@ let g:syntastic_enable_signs=1
 "let g:syntastic_objc_config_file = '.clang_complete'
 ""let g:syntastic_objc_checkers = ['clang']
 let g:syntastic_objc_compiler = 'clang'
+"let g:syntastic_objc_config_file = '.clang_complete'
+let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_objc_remove_include_errors = 0
@@ -107,6 +110,17 @@ let g:syntastic_objc_remove_include_errors = 0
 "let g:syntastic_check_on_wq = 0
 let g:syntastic_error_symbol = '□'
 let g:syntastic_warning_symbol = '»'
+
+fun! Analyze()
+    let g:syntastic_objc_compiler_options = '`< .clang_complete` --analyze -arch arm64'
+    "highlight SyntasticWarningSign guifg=White guibg=RoyalBlue1
+    "let g:syntastic_warning_symbol = '⤷'
+    write
+    let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
+    "highlight SyntasticWarningSign guifg=Black guibg=yellow
+    "let g:syntastic_warning_symbol = '»'
+endfun
+:command! Analyze :call Analyze()
 
 highlight SyntasticWarningSign guifg=Black guibg=yellow
 
@@ -188,7 +202,8 @@ nnoremap <silent> <space> :CtrlPBuffer<cr>
 " }}}
 
 " Bookmarks setup
-"let g:bookmark_save_per_working_dir = 1
+let g:bookmark_save_per_working_dir = 1
+let g:bookmark_manage_per_buffer = 1
 "let g:bookmark_auto_save = 1
 highlight BookmarkSign guifg=DarkGoldenrod2
 
