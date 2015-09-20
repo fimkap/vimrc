@@ -46,6 +46,7 @@ set noswapfile
 set autoread
 set wildmenu
 set ic
+set smartcase
 set cpoptions+=$            " dollar sign while changing
 set completeopt=menu
 set hls
@@ -59,6 +60,7 @@ set report=1
 set guifont=PT\ Mono:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
+set mousemodel=extend
 let c_no_curly_error=1
 "set laststatus=1
 
