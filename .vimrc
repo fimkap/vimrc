@@ -63,7 +63,7 @@ set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
 "set laststatus=1
-
+set rulerformat=%30(%{fugitive#statusline()}\ %c%V\ %p%%%)
 colorscheme newdelek
 "let g:seoul256_background = 235
 "colors seoul256
