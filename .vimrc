@@ -63,7 +63,16 @@ set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
 "set laststatus=1
-set rulerformat=%30(%{fugitive#statusline()}\ %c%V\ %p%%%)
+"set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
+set rulerformat=%30(%{GetGitBranch()}\ %l,%c%V\ %p%%%)
+fun! GetGitBranch()
+    let head = fugitive#head(7)
+    if head ==# ''
+        return ''
+    endif
+    let branch = '░'.head
+    return branch
+endfun
 colorscheme newdelek
 "let g:seoul256_background = 235
 "colors seoul256
