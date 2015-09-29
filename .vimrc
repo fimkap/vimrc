@@ -27,7 +27,7 @@ Plug 'kien/ctrlp.vim'
 "Plug 'junegunn/seoul256.vim'
 Plug 'vim-scripts/twilight'
 Plug 'fimkap/newdelek'
-Plug 'kentaroi/cocoa.vim'
+Plug 'fimkap/cocoa.vim'
 Plug 'rizzatti/dash.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
@@ -36,6 +36,7 @@ Plug 'b4winckler/vim-objc'
 Plug 'vimwiki/vimwiki'
 Plug 'qstrahl/vim-matchmaker'
 Plug 'gregsexton/gitv'
+Plug 'davidoc/taskpaper.vim'
 " }}}
 
 call plug#end()
@@ -62,22 +63,29 @@ set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
-"set laststatus=1
+"set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
-set rulerformat=%30(%{GetGitBranch()}\ %l,%c%V\ %p%%%)
+set rulerformat=%30(%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
 fun! GetGitBranch()
     let head = fugitive#head(7)
     if head ==# ''
         return ''
     endif
-    let branch = '░'.head
+    let branch = '┟  '.head
     return branch
+endfun
+fun! IsDropbox(path)
+    if a:path =~ 'Dropbox'
+        return '⍂'
+    endif
+    return ''
 endfun
 colorscheme newdelek
 "let g:seoul256_background = 235
 "colors seoul256
 "hi! link Conceal Normal
 " }}}
+au VimEnter * set laststatus=0
 
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
@@ -147,6 +155,7 @@ highlight SyntasticWarningSign guifg=Black guibg=yellow
 
 " clang
 let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib'
+let g:clang_auto_user_options="compile_commands.json, path, .clang_complete"
 let g:clang_snippets = 1
 let g:clang_snippets_engine = 'clang_complete'
 "let g:clang_periodic_quickfix = 1
