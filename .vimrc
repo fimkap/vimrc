@@ -37,6 +37,7 @@ Plug 'vimwiki/vimwiki'
 Plug 'qstrahl/vim-matchmaker'
 Plug 'gregsexton/gitv'
 Plug 'davidoc/taskpaper.vim'
+Plug 'gilligan/vim-lldb'
 " }}}
 
 call plug#end()
@@ -63,9 +64,10 @@ set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
+hi DropboxSymbol ctermfg=Blue ctermbg=White guibg=White guifg=RoyalBlue3
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
-set rulerformat=%30(%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
+set rulerformat=%30(%#DropboxSymbol#%{IsDropbox()}%*%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
 fun! GetGitBranch()
     let head = fugitive#head(7)
     if head ==# ''
@@ -74,8 +76,9 @@ fun! GetGitBranch()
     let branch = '┟  '.head
     return branch
 endfun
-fun! IsDropbox(path)
-    if a:path =~ 'Dropbox'
+fun! IsDropbox()
+    let path = expand('%:p')
+    if path =~ 'Dropbox'
         return '⍂'
     endif
     return ''
@@ -90,9 +93,9 @@ au VimEnter * set laststatus=0
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
 "let g:gitgutter_highlight_lines    = 1
-highlight GitGutterAdd guibg=#00875f guifg=#00875f
-highlight GitGutterChange guibg=#df00ff guifg=#df00ff
-highlight GitGutterDelete guibg=#ff0000 guifg=#ff0000
+highlight GitGutterAdd guibg=#e1f8e1 guifg=#e1f8e1
+highlight GitGutterChange guibg=#ffb2ff guifg=#ffb2ff
+highlight GitGutterDelete guibg=#ff8080 guifg=#ff8080
 highlight GitGutterChangeDelete guibg=#00afff guifg=#00afff
 
 " Airline Setup {{{
@@ -155,7 +158,7 @@ highlight SyntasticWarningSign guifg=Black guibg=yellow
 
 " clang
 let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib'
-let g:clang_auto_user_options="compile_commands.json, path, .clang_complete"
+"let g:clang_auto_user_options="compile_commands.json, path, .clang_complete"
 let g:clang_snippets = 1
 let g:clang_snippets_engine = 'clang_complete'
 "let g:clang_periodic_quickfix = 1
@@ -203,6 +206,7 @@ let g:ctrlp_by_filename = 1
 let g:ctrlp_max_files = 10000
 let g:ctrlp_follow_symlinks = 1
 nnoremap <silent> <space> :CtrlPBuffer<cr>
+nnoremap <silent> <leader>pl :CtrlPLine<cr>
 " }}}
 
 " ClangFormat Setup {{{
