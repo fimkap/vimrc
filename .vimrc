@@ -20,6 +20,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-characterize'
 "Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
 "Plug 'bling/vim-airline'
@@ -64,7 +65,7 @@ set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
-hi DropboxSymbol ctermfg=Blue ctermbg=White guibg=White guifg=RoyalBlue3
+"hi DropboxSymbol ctermfg=27 ctermbg=White guibg=White guifg=RoyalBlue3
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
 set rulerformat=%30(%#DropboxSymbol#%{IsDropbox()}%*%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
@@ -79,7 +80,11 @@ endfun
 fun! IsDropbox()
     let path = expand('%:p')
     if path =~ 'Dropbox'
-        return '⍂'
+        if has("gui_running")
+            return '⍂'
+        else
+            return ''
+        endif
     endif
     return ''
 endfun
@@ -93,7 +98,7 @@ au VimEnter * set laststatus=0
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
 "let g:gitgutter_highlight_lines    = 1
-highlight GitGutterAdd guibg=#e1f8e1 guifg=#e1f8e1
+highlight GitGutterAdd ctermbg=158 ctermfg=158 guibg=#e1f8e1 guifg=#e1f8e1
 highlight GitGutterChange guibg=#ffb2ff guifg=#ffb2ff
 highlight GitGutterDelete guibg=#ff8080 guifg=#ff8080
 highlight GitGutterChangeDelete guibg=#00afff guifg=#00afff
