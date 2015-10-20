@@ -60,7 +60,8 @@ set tabstop=4
 set softtabstop=4
 set expandtab
 set report=1
-set guifont=PT\ Mono:h12
+"set guifont=PT\ Mono:h12
+set guifont=SourceCodePro+Powerline+Awesome\ Regular:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
@@ -68,23 +69,20 @@ let c_no_curly_error=1
 "hi DropboxSymbol ctermfg=27 ctermbg=White guibg=White guifg=RoyalBlue3
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
-set rulerformat=%30(%#DropboxSymbol#%{IsDropbox()}%*%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
+set rulerformat=%30(%#dropboxIcon#%{IsDropbox()}%*%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
 fun! GetGitBranch()
     let head = fugitive#head(7)
     if head ==# ''
         return ''
     endif
-    let branch = '┟  '.head
+    "let branch = '┟  '.head
+    let branch = ' '.head
     return branch
 endfun
 fun! IsDropbox()
     let path = expand('%:p')
     if path =~ 'Dropbox'
-        if has("gui_running")
-            return '⍂'
-        else
-            return ''
-        endif
+        return '   '
     endif
     return ''
 endfun
@@ -131,12 +129,12 @@ let g:syntastic_objc_compiler = 'clang'
 "let g:syntastic_objc_config_file = '.clang_complete'
 let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_objc_remove_include_errors = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_objc_remove_include_errors = 1
 "let g:syntastic_check_on_open = 1
 "let g:syntastic_check_on_wq = 0
-let g:syntastic_error_symbol = '□'
-let g:syntastic_warning_symbol = '»'
+let g:syntastic_error_symbol = '✕'
+let g:syntastic_warning_symbol = '⧍'
 
 fun! Analyze()
     let g:syntastic_objc_compiler_options = '`< .clang_complete` --analyze -arch arm64'
@@ -149,7 +147,8 @@ fun! Analyze()
 endfun
 :command! Analyze :call Analyze()
 
-highlight SyntasticWarningSign guifg=Black guibg=yellow
+highlight SyntasticWarningSign guifg=Black guibg=Yellow
+highlight SyntasticErrorSign guifg=White guibg=Red
 
 "hi! link SyntasticErrorLine Visual
 "hi! link SyntasticWarningLine Visual
@@ -278,10 +277,12 @@ endfun
 :command! A :call Alt()
 
 " Global search (use 50 chars width on the right side)
-nmap gl :silent Ggrep <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
-:command! -nargs=+ Look :silent Ggrep <args> | vertical bo 50 cwindow
+nmap gl :silent Ggrep! <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
+:command! -nargs=+ Look :silent Ggrep! <args> | vertical bo 50 cwindow
 
 nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
+
+:nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
 "nmap gb :call ClangUpdateQuickFix()<CR>: cwindow<CR>
 
