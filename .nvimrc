@@ -1,30 +1,28 @@
-
 " VIM-PLUG Setup {{{
 
 " Automatic installation {{{
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !mkdir -p ~/.vim/autoload
-  silent !curl -fLo ~/.vim/autoload/plug.vim
+if empty(glob('~/.nvim/autoload/plug.vim'))
+  silent !mkdir -p ~/.nvim/autoload
+  silent !curl -fLo ~/.nvim/autoload/plug.vim
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   au VimEnter * PlugInstall
 endif
 " }}}
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.nvim/plugged')
 
 " Plugins {{{
 "Plug 'Valloric/YouCompleteMe'
 Plug 'ervandew/supertab'
 Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-git'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-characterize'
 "Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
-"Plug 'bling/vim-airline'
+Plug 'bling/vim-airline'
 Plug 'kien/ctrlp.vim'
 "Plug 'junegunn/seoul256.vim'
 Plug 'vim-scripts/twilight'
@@ -39,7 +37,7 @@ Plug 'vimwiki/vimwiki'
 Plug 'qstrahl/vim-matchmaker'
 Plug 'gregsexton/gitv'
 Plug 'davidoc/taskpaper.vim'
-Plug 'gilligan/vim-lldb'
+Plug 'critiqjo/lldb.nvim'
 " }}}
 
 call plug#end()
@@ -67,13 +65,12 @@ set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
-let cpp_no_cpp11=1
 "hi DropboxSymbol ctermfg=27 ctermbg=White guibg=White guifg=RoyalBlue3
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
-set rulerformat=%50(%#warningmsg#%{SyntasticStatuslineFlag()}%*\ %#dropboxIcon#%{IsDropbox()}%*%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
-"set rulerformat=%*%#Comment#%{GetGitBranch()}%*
-"set rulerformat+=\ %l,%c%V%=%P
+"set rulerformat=%30(%#dropboxIcon#%{IsDropbox()}%*%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
+set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
+
 fun! GetGitBranch()
     let head = fugitive#head(7)
     if head ==# ''
@@ -87,15 +84,21 @@ fun! IsDropbox()
     let path = expand('%:p')
     if path =~ 'Dropbox'
         return '   '
+        "if has("gui_running")
+        "    return '⍂'
+        "else
+        "    return ''
+        "endif
     endif
     return ''
 endfun
 colorscheme newdelek
+"colorscheme default
 "let g:seoul256_background = 235
 "colors seoul256
 "hi! link Conceal Normal
 " }}}
-au VimEnter * set laststatus=0
+"au VimEnter * set laststatus=0
 
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
@@ -106,8 +109,10 @@ highlight GitGutterDelete guibg=#ff8080 guifg=#ff8080
 highlight GitGutterChangeDelete guibg=#00afff guifg=#00afff
 
 " Airline Setup {{{
-let g:airline_theme = 'wombat'
+let g:airline_theme = 'papercolor'
 let g:airline_powerline_fonts = 0
+
+"set laststatus=2
 
 " File Type Settings {{{
 
@@ -122,9 +127,9 @@ let g:airline_powerline_fonts = 0
 
 " Syntastic Setup {{{
 " syntastic
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 "
 let g:syntastic_enable_signs=1
 "let g:syntastic_objc_config_file = '.clang_complete'
@@ -283,13 +288,9 @@ endfun
 " Global search (use 50 chars width on the right side)
 nmap gl :silent Ggrep! <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
 :command! -nargs=+ Look :silent Ggrep! <args> | vertical bo 50 cwindow
+:command! -nargs=+ LookCached :silent Ggrep! --cached <args> | vertical bo 50 cwindow
 
 nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
-
-" Folding for git
-autocmd FileType gitcommit set foldmethod=syntax
-
-:nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
 "nmap gb :call ClangUpdateQuickFix()<CR>: cwindow<CR>
 
@@ -297,32 +298,3 @@ autocmd FileType gitcommit set foldmethod=syntax
 nmap [z :so ~/.vim/objcfold.vim<CR>zr
 
 highlight Matchmaker guibg=aquamarine1
-
-function! DoPrettyXML()
-  " save the filetype so we can restore it later
-  let l:origft = &ft
-  set ft=
-  " delete the xml header if it exists. This will
-  " permit us to surround the document with fake tags
-  " without creating invalid xml.
-  1s/<?xml .*?>//e
-  " insert fake tags around the entire document.
-  " This will permit us to pretty-format excerpts of
-  " XML that may contain multiple top-level elements.
-  0put ='<PrettyXML>'
-  $put ='</PrettyXML>'
-  silent %!xmllint --format -
-  " xmllint will insert an <?xml?> header. it's easy enough to delete
-  " if you don't want it.
-  " delete the fake tags
-  2d
-  $d
-  " restore the 'normal' indentation, which is one extra level
-  " too deep due to the extra tags we wrapped around the document.
-  silent %<
-  " back to home
-  1
-  " restore the filetype
-  exe "set ft=" . l:origft
-endfunction
-command! PrettyXML call DoPrettyXML()
