@@ -38,6 +38,8 @@ Plug 'qstrahl/vim-matchmaker'
 Plug 'gregsexton/gitv'
 Plug 'davidoc/taskpaper.vim'
 Plug 'critiqjo/lldb.nvim'
+Plug 'junegunn/goyo.vim'
+"Plug 'benekastah/neomake'
 " }}}
 
 call plug#end()
@@ -65,6 +67,8 @@ set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
+" find thw right way to cope with objc parenthesis red highlight 
+hi cParenError ctermbg=311
 "hi DropboxSymbol ctermfg=27 ctermbg=White guibg=White guifg=RoyalBlue3
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
@@ -104,9 +108,9 @@ colorscheme newdelek
 let g:gitgutter_sign_column_always = 1
 "let g:gitgutter_highlight_lines    = 1
 highlight GitGutterAdd ctermbg=158 ctermfg=158 guibg=#e1f8e1 guifg=#e1f8e1
-highlight GitGutterChange guibg=#ffb2ff guifg=#ffb2ff
-highlight GitGutterDelete guibg=#ff8080 guifg=#ff8080
-highlight GitGutterChangeDelete guibg=#00afff guifg=#00afff
+highlight GitGutterChange ctermbg=117 ctermfg=117 guibg=#ffb2ff guifg=#ffb2ff
+highlight GitGutterDelete ctermbg=196 ctermfg=196 guibg=#ff8080 guifg=#ff8080
+highlight GitGutterChangeDelete ctermbg=147 ctermfg=147 guibg=#00afff guifg=#00afff
 
 " Airline Setup {{{
 let g:airline_theme = 'papercolor'
@@ -124,6 +128,27 @@ let g:airline_powerline_fonts = 0
 "            \   endif                                                                                     |
 "            \ endif
 "
+
+" Neomake Setup
+"let g:neomake_objc_clang_maker = {
+"            \ 'exe': 'clang',
+"            \ 'args': ['-x','objective-c','`<\ .clang_complete`','-fsyntax-only','-arch','arm64','%:p'],
+"            \ 'errorformat':
+"            \     '%-G%f:%s:,' .
+"            \     '%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,' .
+"            \     '%-G%f:%l: %#error: %#for each function it appears%.%#,' .
+"            \     '%-GIn file included%.%#,'.
+"            \     '%-G %#from %f:%l\,,' .
+"            \     '%f:%l:%c: %trror: %m,' .
+"            \     '%f:%l:%c: %tarning: %m,' .
+"            \     '%f:%l:%c: %m,' .
+"            \     '%f:%l: %trror: %m,' .
+"            \     '%f:%l: %tarning: %m,' .
+"            \     '%f:%l: %m',
+"            \ }
+"
+"let g:neomake_objc_enabled_makers = ['clang']
+"autocmd! BufWritePost objc Neomake
 
 " Syntastic Setup {{{
 " syntastic
@@ -156,8 +181,8 @@ fun! Analyze()
 endfun
 :command! Analyze :call Analyze()
 
-highlight SyntasticWarningSign guifg=Black guibg=Yellow
-highlight SyntasticErrorSign guifg=White guibg=Red
+highlight SyntasticWarningSign ctermfg=black ctermbg=yellow guifg=Black guibg=Yellow
+highlight SyntasticErrorSign ctermfg=231 ctermbg=red guifg=White guibg=Red
 
 "hi! link SyntasticErrorLine Visual
 "hi! link SyntasticWarningLine Visual
@@ -212,6 +237,9 @@ let g:ycm_semantic_triggers = {
  \ }
 " }}}
 
+"set makeprg = "clang -x objective-c `< .clang_complete` -fsyntax-only -arch arm64 -I. -I.. -Iinclude -Iincludes -I../include -I../includes"
+"set errorformat = "%-G%f:%s:,%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,%-G%f:%l: %#error: %#for each function it appears%.%#,%-GIn file included%.%#,%-G %#from %f:%l\,,%f:%l:%c: %trror: %m,%f:%l:%c: %tarning: %m,%f:%l:%c: %m,%f:%l: %trror: %m,%f:%l: %tarning: %m,%f:%l: %m"
+
 " CtrlP Setup {{{
 let g:ctrlp_user_command = 'ag %s -i -l --nocolor --nogroup --hidden -g ""'
 let g:ctrlp_working_path_mode = 'r'
@@ -245,8 +273,8 @@ let g:bookmark_manage_per_buffer = 1
 highlight BookmarkSign guifg=DarkGoldenrod2
 
 " Goyo Setup {{{
-"let g:goyo_margin_top = 2
-"let g:goyo_margin_bottom = 2
+let g:goyo_margin_top = 2
+let g:goyo_margin_bottom = 2
 
 "function! s:goyo_enter()
 "  silent !tmux set status off
@@ -261,7 +289,7 @@ highlight BookmarkSign guifg=DarkGoldenrod2
 "au  User GoyoEnter nested call <SID>goyo_enter()
 "au  User GoyoLeave nested call <SID>goyo_leave()
 "
-"nnoremap <leader>g :Goyo<CR>
+nnoremap <leader>g :Goyo<CR>
 " }}}
 
 fun! Alt()
