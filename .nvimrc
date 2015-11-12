@@ -39,7 +39,8 @@ Plug 'gregsexton/gitv'
 Plug 'davidoc/taskpaper.vim'
 Plug 'critiqjo/lldb.nvim'
 Plug 'junegunn/goyo.vim'
-"Plug 'benekastah/neomake'
+Plug 'benekastah/neomake'
+"Plug 'haifengkao/objc_matchbracket'
 " }}}
 
 call plug#end()
@@ -48,7 +49,7 @@ set nobackup
 set nowritebackup
 set noswapfile
 set autoread
-set wildmenu
+set nowildmenu
 set ic
 set smartcase
 set cpoptions+=$            " dollar sign while changing
@@ -115,6 +116,11 @@ highlight GitGutterChangeDelete ctermbg=147 ctermfg=147 guibg=#00afff guifg=#00a
 " Airline Setup {{{
 let g:airline_theme = 'papercolor'
 let g:airline_powerline_fonts = 0
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.branch = ''
 
 "set laststatus=2
 
@@ -130,24 +136,24 @@ let g:airline_powerline_fonts = 0
 "
 
 " Neomake Setup
-"let g:neomake_objc_clang_maker = {
-"            \ 'exe': 'clang',
-"            \ 'args': ['-x','objective-c','`<\ .clang_complete`','-fsyntax-only','-arch','arm64','%:p'],
-"            \ 'errorformat':
-"            \     '%-G%f:%s:,' .
-"            \     '%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,' .
-"            \     '%-G%f:%l: %#error: %#for each function it appears%.%#,' .
-"            \     '%-GIn file included%.%#,'.
-"            \     '%-G %#from %f:%l\,,' .
-"            \     '%f:%l:%c: %trror: %m,' .
-"            \     '%f:%l:%c: %tarning: %m,' .
-"            \     '%f:%l:%c: %m,' .
-"            \     '%f:%l: %trror: %m,' .
-"            \     '%f:%l: %tarning: %m,' .
-"            \     '%f:%l: %m',
-"            \ }
+let g:neomake_objc_clang_maker = {
+            \ 'exe': '/usr/bin/clang',
+            \ 'args': ['-x','objective-c','-std=c99','-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include','-isysroot\ /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk','-F/Users/efimpolevoi/Library/Developer/Xcode/DerivedData/CellewiseHandset-drdcscawevketifzeigwnpckmpqy/Build/Products/Debug-iphoneos','-fsyntax-only','-arch\ arm64','%:p'],
+            \ 'errorformat':
+            \     '%-G%f:%s:,' .
+            \     '%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,' .
+            \     '%-G%f:%l: %#error: %#for each function it appears%.%#,' .
+            \     '%-GIn file included%.%#,'.
+            \     '%-G %#from %f:%l\,,' .
+            \     '%f:%l:%c: %trror: %m,' .
+            \     '%f:%l:%c: %tarning: %m,' .
+            \     '%f:%l:%c: %m,' .
+            \     '%f:%l: %trror: %m,' .
+            \     '%f:%l: %tarning: %m,' .
+            \     '%f:%l: %m'
+            \ }
 "
-"let g:neomake_objc_enabled_makers = ['clang']
+let g:neomake_objc_enabled_makers = ['clang']
 "autocmd! BufWritePost objc Neomake
 
 " Syntastic Setup {{{
@@ -237,8 +243,10 @@ let g:ycm_semantic_triggers = {
  \ }
 " }}}
 
-"set makeprg = "clang -x objective-c `< .clang_complete` -fsyntax-only -arch arm64 -I. -I.. -Iinclude -Iincludes -I../include -I../includes"
-"set errorformat = "%-G%f:%s:,%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,%-G%f:%l: %#error: %#for each function it appears%.%#,%-GIn file included%.%#,%-G %#from %f:%l\,,%f:%l:%c: %trror: %m,%f:%l:%c: %tarning: %m,%f:%l:%c: %m,%f:%l: %trror: %m,%f:%l: %tarning: %m,%f:%l: %m"
+"set makeprg=clang\ -x\ objective-c\ \"`<\ .clang_complete`\"\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
+"set makeprg=clang\ -x\ objective-c\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
+set makeprg=xcodebuild\ -workspace\ CellewiseHandset.xcworkspace\ -scheme\ TransferAtHomeEn\ -sdk\ iphoneos9.1\ build
+set errorformat=%-G%f:%s:,%-G%f:%l:\ %#error:\ %#(Each\ undeclared\ identifier\ is\ reported\ only%.%#,%-G%f:%l:\ %#error:\ %#for\ each\ function\ it\ appears%.%#,%-GIn\ file\ included%.%#,%-G\ %#from\ %f:%l\,,%f:%l:%c:\ %trror:\ %m,%f:%l:%c:\ %tarning:\ %m,%f:%l:%c:\ %m,%f:%l:\ %trror:\ %m,%f:%l:\ %tarning:\ %m,%f:%l:\ %m
 
 " CtrlP Setup {{{
 let g:ctrlp_user_command = 'ag %s -i -l --nocolor --nogroup --hidden -g ""'
@@ -326,3 +334,8 @@ nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
 nmap [z :so ~/.vim/objcfold.vim<CR>zr
 
 highlight Matchmaker guibg=aquamarine1
+
+" Copy to clipboard
+vnoremap  <leader>y  "+y
+
+nnoremap gm :e #<CR>
