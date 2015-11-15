@@ -49,7 +49,9 @@ set nobackup
 set nowritebackup
 set noswapfile
 set autoread
+" Change sensible; wildmode default has been changed in 0.1
 set nowildmenu
+set wildmode=list:longest,full
 set ic
 set smartcase
 set cpoptions+=$            " dollar sign while changing
