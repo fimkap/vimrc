@@ -40,6 +40,7 @@ Plug 'davidoc/taskpaper.vim'
 Plug 'critiqjo/lldb.nvim'
 Plug 'junegunn/goyo.vim'
 Plug 'benekastah/neomake'
+Plug 'mhinz/vim-grepper'
 "Plug 'haifengkao/objc_matchbracket'
 " }}}
 
@@ -113,12 +114,16 @@ highlight GitGutterChange ctermbg=117 ctermfg=117 guibg=#ffb2ff guifg=#ffb2ff
 highlight GitGutterDelete ctermbg=196 ctermfg=196 guibg=#ff8080 guifg=#ff8080
 highlight GitGutterChangeDelete ctermbg=147 ctermfg=147 guibg=#00afff guifg=#00afff
 
+hi link taskpaperDone Type
+hi link taskpaperCancelled Type
+
 " Airline Setup {{{
 let g:airline_theme = 'papercolor'
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
+let g:airline_enable_hunks = 0
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.branch = ''
 let g:airline_left_sep = ''
@@ -329,6 +334,8 @@ endfun
 nmap gl :silent Ggrep! <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
 :command! -nargs=+ Look :silent Ggrep! <args> | vertical bo 50 cwindow
 :command! -nargs=+ LookCached :silent Ggrep! --cached <args> | vertical bo 50 cwindow
+
+:command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 60 cwindow
 
 nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
 
