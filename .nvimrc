@@ -1,15 +1,15 @@
 " VIM-PLUG Setup {{{
 
 " Automatic installation {{{
-if empty(glob('~/.nvim/autoload/plug.vim'))
-  silent !mkdir -p ~/.nvim/autoload
-  silent !curl -fLo ~/.nvim/autoload/plug.vim
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !mkdir -p ~/.config/nvim/autoload
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   au VimEnter * PlugInstall
 endif
 " }}}
 
-call plug#begin('~/.nvim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 
 " Plugins {{{
 "Plug 'Valloric/YouCompleteMe'
@@ -42,6 +42,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'benekastah/neomake'
 Plug 'mhinz/vim-grepper'
 "Plug 'haifengkao/objc_matchbracket'
+Plug 'kurkale6ka/vim-chess'
 " }}}
 
 call plug#end()
@@ -72,7 +73,7 @@ set updatetime=750
 set mousemodel=extend
 let c_no_curly_error=1
 " find thw right way to cope with objc parenthesis red highlight 
-hi cParenError ctermbg=311
+hi cParenError ctermbg=231
 "hi DropboxSymbol ctermfg=27 ctermbg=White guibg=White guifg=RoyalBlue3
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
@@ -169,7 +170,7 @@ let g:neomake_objc_enabled_makers = ['clang']
 
 " Syntastic Setup {{{
 " syntastic
-set statusline+=%#warningmsg#
+set statusline+=%#Search#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 "
@@ -333,11 +334,16 @@ endfun
 :command! A :call Alt()
 
 " Global search (use 50 chars width on the right side)
-nmap gl :silent Ggrep! <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
-:command! -nargs=+ Look :silent Ggrep! <args> | vertical bo 50 cwindow
+"nmap gl :silent Ggrep! <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 cwindow<CR>
+":command! -nargs=+ Look :silent Ggrep! <args> | vertical bo 50 cwindow
 :command! -nargs=+ LookCached :silent Ggrep! --cached <args> | vertical bo 50 cwindow
 
-:command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 60 cwindow
+":command! -nargs=* -complete=file Ag cex [] | vertical bo 50 copen | Grepper! -tool ag -query <args> 
+:command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 50 copen
+nmap gk :Grepper! -tool ag -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
+
+:command! -nargs=* -complete=file Look Grepper! -tool git -query <args> | vertical bo 50 copen
+nmap gl :Grepper! -tool git -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
 
 nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
 
