@@ -42,7 +42,8 @@ Plug 'junegunn/goyo.vim'
 Plug 'benekastah/neomake'
 Plug 'mhinz/vim-grepper'
 "Plug 'haifengkao/objc_matchbracket'
-Plug 'kurkale6ka/vim-chess'
+"Plug 'kurkale6ka/vim-chess'
+Plug 'tpope/vim-afterimage'
 " }}}
 
 call plug#end()
@@ -267,6 +268,7 @@ let g:ctrlp_working_path_mode = 'r'
 let g:ctrlp_by_filename = 1
 let g:ctrlp_max_files = 10000
 let g:ctrlp_follow_symlinks = 1
+let g:ctrlp_match_window = 'max:15,results:20'
 nnoremap <silent> <space> :CtrlPBuffer<cr>
 nnoremap <silent> <leader>pl :CtrlPLine<cr>
 " }}}
@@ -339,11 +341,11 @@ endfun
 ":command! -nargs=+ Look :silent Ggrep! <args> | vertical bo 50 cwindow
 :command! -nargs=+ LookCached :silent Ggrep! --cached <args> | vertical bo 50 cwindow
 
-":command! -nargs=* -complete=file Ag cex [] | vertical bo 50 copen | Grepper! -tool ag -query <args> 
-:command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 50 copen
+:command! -nargs=* -complete=file Ag cex [] | vertical bo 50 copen | Grepper! -tool ag -query <args>
+":command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 50 copen
 nmap gk :Grepper! -tool ag -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
 
-:command! -nargs=* -complete=file Look Grepper! -tool git -query <args> | vertical bo 50 copen
+:command! -nargs=* -complete=file Look cex [] | vertical bo 50 copen | Grepper! -tool git -query <args>
 nmap gl :Grepper! -tool git -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
 
 nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
@@ -361,3 +363,7 @@ vnoremap  <leader>y  "+y
 nnoremap gm :e #<CR>
 " Hide tilde (sideeffect - hides all special symbols)
 hi NonText ctermfg=231
+
+" Terminal
+nnoremap <leader>t :below 15sp term:///bin/bash<cr>i
+tnoremap <F1> <C-\><C-n>
