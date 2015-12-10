@@ -367,3 +367,16 @@ hi NonText ctermfg=231
 " Terminal
 nnoremap <leader>t :below 15sp term:///bin/bash<cr>i
 tnoremap <F1> <C-\><C-n>
+
+" QuickLook in CtrlP
+let g:ctrlp_buffer_func = { 'enter': 'CtrlpMaps' }
+
+func! CtrlpMaps()
+    nnoremap <buffer> <silent> <c-q> :call <sid>QuickLook()<cr>
+endfunc
+
+func! s:QuickLook()
+    let line = getline('.')
+    let l:path = getcwd() . substitute(line, '> ', '/', "")
+    call system("qlmanage -p 2>/dev/null '" . path . "'")
+endfunc
