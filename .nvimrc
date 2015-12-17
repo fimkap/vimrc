@@ -44,6 +44,7 @@ Plug 'mhinz/vim-grepper'
 "Plug 'haifengkao/objc_matchbracket'
 "Plug 'kurkale6ka/vim-chess'
 Plug 'tpope/vim-afterimage'
+Plug 'fimkap/vim-mark'
 " }}}
 
 call plug#end()
@@ -188,7 +189,8 @@ let g:syntastic_objc_remove_include_errors = 1
 "let g:syntastic_check_on_open = 1
 "let g:syntastic_check_on_wq = 0
 let g:syntastic_error_symbol = '✕'
-let g:syntastic_warning_symbol = '⧍'
+"let g:syntastic_warning_symbol = '⧍'
+let g:syntastic_warning_symbol = ''
 
 fun! Analyze()
     let g:syntastic_objc_compiler_options = '`< .clang_complete` --analyze -arch arm64'
@@ -201,7 +203,7 @@ fun! Analyze()
 endfun
 :command! Analyze :call Analyze()
 
-highlight SyntasticWarningSign ctermfg=black ctermbg=yellow guifg=Black guibg=Yellow
+highlight SyntasticWarningSign ctermfg=yellow ctermbg=231 guifg=Black guibg=Yellow
 highlight SyntasticErrorSign ctermfg=231 ctermbg=red guifg=White guibg=Red
 
 "hi! link SyntasticErrorLine Visual
@@ -380,3 +382,9 @@ func! s:QuickLook()
     let l:path = getcwd() . substitute(line, '> ', '/', "")
     call system("qlmanage -p 2>/dev/null '" . path . "'")
 endfunc
+
+vnoremap // y/<C-R>"<CR>
+" True Color for iTerm2
+if $TERM_PROGRAM == 'iTerm.app'
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
