@@ -153,7 +153,7 @@ let g:airline_right_alt_sep = ''
 " Neomake Setup
 let g:neomake_objc_clang_maker = {
             \ 'exe': '/usr/bin/clang',
-            \ 'args': ['-x','objective-c','-std=c99','-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include','-isysroot\ /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk','-F/Users/efimpolevoi/Library/Developer/Xcode/DerivedData/CellewiseHandset-drdcscawevketifzeigwnpckmpqy/Build/Products/Debug-iphoneos','-fsyntax-only','-arch\ arm64','%:p'],
+            \ 'args': ["`<.clang_complete`",'--analyze','-arch\ arm64','%:p'],
             \ 'errorformat':
             \     '%-G%f:%s:,' .
             \     '%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,' .
@@ -396,3 +396,9 @@ nmap <F9> <Plug>LLBreakSwitch
 nnoremap <F6> :LL step<CR>
 nnoremap <F5> :LL continue<CR>
 nnoremap <S-F5> :LL process interrupt<CR>
+
+" Base64 decode
+nnoremap \bd :%!python -m base64 -d<CR>:set ft=xml<CR>
+
+" Paste fast in terminal from clipboard
+nnoremap <S-F12> :read !pbpaste<CR>
