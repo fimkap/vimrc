@@ -45,6 +45,7 @@ Plug 'mhinz/vim-grepper'
 "Plug 'kurkale6ka/vim-chess'
 Plug 'tpope/vim-afterimage'
 Plug 'fimkap/vim-mark'
+Plug 'aklt/plantuml-syntax'
 " }}}
 
 call plug#end()
@@ -204,7 +205,7 @@ endfun
 :command! Analyze :call Analyze()
 
 highlight SyntasticWarningSign ctermfg=220 ctermbg=231 guifg=Black guibg=Yellow
-highlight SyntasticWarningLine ctermbg=230 guibg=Yellow
+"highlight SyntasticWarningLine ctermbg=230 guibg=Yellow
 highlight SyntasticErrorSign ctermfg=231 ctermbg=red guifg=White guibg=Red
 
 "hi! link SyntasticErrorLine Visual
@@ -397,8 +398,11 @@ nnoremap <F6> :LL step<CR>
 nnoremap <F5> :LL continue<CR>
 nnoremap <S-F5> :LL process interrupt<CR>
 
-" Base64 decode
-nnoremap \bd :%!python -m base64 -d<CR>:set ft=xml<CR>
+" Base64 decode and pretty print in XML
+nnoremap \bd :%!python -m base64 -d<CR>:set ft=xml<CR>:%!xmllint --format -<CR>
 
 " Paste fast in terminal from clipboard
 nnoremap <S-F12> :read !pbpaste<CR>
+
+" XML format
+nmap <Leader>pxa :%!xmllint --format -<CR>
