@@ -155,7 +155,7 @@ let g:airline_right_alt_sep = ''
 " Neomake Setup
 let g:neomake_objc_clang_maker = {
             \ 'exe': '/usr/bin/clang',
-            \ 'args': ['-x','objective-c','-std=c99','-I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include','-isysroot\ /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk','-F/Users/efimpolevoi/Library/Developer/Xcode/DerivedData/CellewiseHandset-drdcscawevketifzeigwnpckmpqy/Build/Products/Debug-iphoneos','-fsyntax-only','-arch\ arm64','%:p'],
+            \ 'args': ["`<.clang_complete`",'--analyze','-arch\ arm64','%:p'],
             \ 'errorformat':
             \     '%-G%f:%s:,' .
             \     '%-G%f:%l: %#error: %#(Each undeclared identifier is reported only%.%#,' .
@@ -205,7 +205,8 @@ fun! Analyze()
 endfun
 :command! Analyze :call Analyze()
 
-highlight SyntasticWarningSign ctermfg=yellow ctermbg=231 guifg=Black guibg=Yellow
+highlight SyntasticWarningSign ctermfg=220 ctermbg=231 guifg=Black guibg=Yellow
+"highlight SyntasticWarningLine ctermbg=230 guibg=Yellow
 highlight SyntasticErrorSign ctermfg=231 ctermbg=red guifg=White guibg=Red
 
 "hi! link SyntasticErrorLine Visual
@@ -297,6 +298,7 @@ nnoremap <silent> <leader>pl :CtrlPLine<cr>
 let g:bookmark_save_per_working_dir = 1
 let g:bookmark_manage_per_buffer = 1
 "let g:bookmark_auto_save = 1
+let g:bookmark_annotation_sign = ''
 highlight BookmarkSign guifg=DarkGoldenrod2
 
 " Goyo Setup {{{
@@ -390,3 +392,18 @@ vnoremap // y/<C-R>"<CR>
 if $TERM_PROGRAM == 'iTerm.app'
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 endif
+
+" LLDB
+nmap <F9> <Plug>LLBreakSwitch
+nnoremap <F6> :LL step<CR>
+nnoremap <F5> :LL continue<CR>
+nnoremap <S-F5> :LL process interrupt<CR>
+
+" Base64 decode and pretty print in XML
+nnoremap \bd :%!python -m base64 -d<CR>:set ft=xml<CR>:%!xmllint --format -<CR>
+
+" Paste fast in terminal from clipboard
+nnoremap <S-F12> :read !pbpaste<CR>
+
+" XML format
+nmap <Leader>pxa :%!xmllint --format -<CR>
