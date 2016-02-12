@@ -45,6 +45,8 @@ Plug 'mhinz/vim-grepper'
 "Plug 'kurkale6ka/vim-chess'
 Plug 'tpope/vim-afterimage'
 Plug 'fimkap/vim-mark'
+Plug 'aklt/plantuml-syntax'
+Plug 'vim-scripts/DrawIt'
 " }}}
 
 call plug#end()
