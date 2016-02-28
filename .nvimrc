@@ -60,7 +60,7 @@ set wildmode=list:longest,full
 set ic
 set smartcase
 set cpoptions+=$            " dollar sign while changing
-set completeopt=menu
+set completeopt=longest,menu
 set hls
 set is
 set diffopt=filler,vertical,iwhite
@@ -297,8 +297,9 @@ nnoremap <silent> <leader>pl :CtrlPLine<cr>
 let g:bookmark_save_per_working_dir = 1
 let g:bookmark_manage_per_buffer = 1
 "let g:bookmark_auto_save = 1
+let g:bookmark_sign = ''
 let g:bookmark_annotation_sign = ''
-highlight BookmarkSign guifg=DarkGoldenrod2
+highlight BookmarkSign ctermfg=27 guifg=DarkGoldenrod2
 
 " Goyo Setup {{{
 let g:goyo_margin_top = 2
@@ -406,3 +407,7 @@ nnoremap <S-F12> :read !pbpaste<CR>
 
 " XML format
 nmap <Leader>pxa :%!xmllint --format -<CR>
+
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
