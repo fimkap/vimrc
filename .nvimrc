@@ -47,6 +47,7 @@ Plug 'tpope/vim-afterimage'
 Plug 'fimkap/vim-mark'
 Plug 'aklt/plantuml-syntax'
 Plug 'vim-scripts/DrawIt'
+Plug 'mickaobrien/vim-stackoverflow'
 " }}}
 
 call plug#end()
@@ -138,6 +139,7 @@ let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
+let g:airline_section_z = '%#__accent_bold#%4l%#__restore__#/%L [%p%%]'
 
 "set laststatus=2
 
