@@ -15,6 +15,9 @@ call plug#begin('~/.config/nvim/plugged')
 "Plug 'Valloric/YouCompleteMe'
 Plug 'ervandew/supertab'
 Plug 'Rip-Rip/clang_complete'
+"Plug 'justmao945/vim-clang'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
@@ -28,12 +31,12 @@ Plug 'kien/ctrlp.vim'
 Plug 'vim-scripts/twilight'
 Plug 'fimkap/newdelek'
 Plug 'fimkap/cocoa.vim'
-Plug 'rizzatti/dash.vim'
+"Plug 'rizzatti/dash.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'fimkap/syntastic'
 Plug 'b4winckler/vim-objc'
-Plug 'vimwiki/vimwiki'
+"Plug 'vimwiki/vimwiki'
 Plug 'qstrahl/vim-matchmaker'
 Plug 'gregsexton/gitv'
 Plug 'davidoc/taskpaper.vim'
@@ -41,13 +44,16 @@ Plug 'critiqjo/lldb.nvim'
 Plug 'junegunn/goyo.vim'
 Plug 'benekastah/neomake'
 Plug 'mhinz/vim-grepper'
-"Plug 'haifengkao/objc_matchbracket'
+Plug 'haifengkao/objc_matchbracket'
 "Plug 'kurkale6ka/vim-chess'
 Plug 'tpope/vim-afterimage'
 Plug 'fimkap/vim-mark'
 Plug 'aklt/plantuml-syntax'
 Plug 'vim-scripts/DrawIt'
 Plug 'mickaobrien/vim-stackoverflow'
+Plug 'romainl/Apprentice'
+"Plug 'bbchung/Clamp'
+Plug 'keith/swift.vim'
 " }}}
 
 call plug#end()
@@ -106,6 +112,7 @@ fun! IsDropbox()
     endif
     return ''
 endfun
+"colorscheme apprentice
 colorscheme newdelek
 "colorscheme default
 "let g:seoul256_background = 235
@@ -126,6 +133,7 @@ hi link taskpaperDone Type
 hi link taskpaperCancelled Type
 
 " Airline Setup {{{
+"let g:airline_theme = 'apprentice'
 let g:airline_theme = 'papercolor'
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
@@ -175,7 +183,55 @@ let g:neomake_objc_clang_maker = {
 let g:neomake_objc_enabled_makers = ['clang']
 "autocmd! BufWritePost objc Neomake
 
+let g:neomake_javascript_jshint_maker = {
+    \ 'args': ['--verbose'],
+    \ 'errorformat': '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
+    \ }
+let g:neomake_javascript_enabled_makers = ['jshint']
+autocmd! BufWritePost,BufEnter *.js Neomake
+let g:neomake_error_sign = {
+    \ 'text': '✕',
+    \ 'texthl': 'ErrorMsg',
+    \ }
+let g:neomake_warning_sign = {
+    \ 'text': '',
+    \ 'texthl': 'Special',
+    \ }
+
 " Syntastic Setup {{{
+" getbg function {{{
+" gets background of a highlighting group with fallback to SignColumn group
+function! s:getbg(group)
+    if has("gui_running")
+        let l:mode = 'gui'
+        let l:validation = '\w\+\|#\x\+'
+    else
+        let l:mode = 'cterm'
+        let l:validation = '\w\+'
+    endif
+
+    if synIDattr(synIDtrans(hlID(a:group)), 'reverse', l:mode)
+        let l:bg = synIDattr(synIDtrans(hlID(a:group)), 'fg', l:mode)
+    else
+        let l:bg = synIDattr(synIDtrans(hlID(a:group)), 'bg', l:mode)
+    endif
+
+    if l:bg == '-1' || l:bg !~ l:validation
+        if synIDattr(synIDtrans(hlID('SignColumn')), 'reverse', l:mode)
+            let l:bg = synIDattr(synIDtrans(hlID('SignColumn')), 'fg', l:mode)
+        else
+            let l:bg = synIDattr(synIDtrans(hlID('SignColumn')), 'bg', l:mode)
+        endif
+    endif
+
+    if l:bg == '-1' || l:bg !~ l:validation
+        return ''
+    endif
+
+    return l:mode . 'bg=' . l:bg
+endfunction
+"}}}
+
 " syntastic
 set statusline+=%#Search#
 set statusline+=%{SyntasticStatuslineFlag()}
@@ -186,7 +242,8 @@ let g:syntastic_enable_signs=1
 ""let g:syntastic_objc_checkers = ['clang']
 let g:syntastic_objc_compiler = 'clang'
 "let g:syntastic_objc_config_file = '.clang_complete'
-let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
+"let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
+let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only'
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_objc_remove_include_errors = 1
@@ -207,14 +264,15 @@ fun! Analyze()
 endfun
 :command! Analyze :call Analyze()
 
-highlight SyntasticWarningSign ctermfg=220 ctermbg=231 guifg=Black guibg=Yellow
+"highlight SyntasticWarningSign ctermfg=220 ctermbg=231 guifg=Black guibg=Yellow
+"highlight SyntasticWarningSign ctermfg=220 s:getbg('SignColumn') guifg=Black guibg=Yellow
 "highlight SyntasticWarningLine ctermbg=230 guibg=Yellow
 highlight SyntasticErrorSign ctermfg=231 ctermbg=red guifg=White guibg=Red
 
 "hi! link SyntasticErrorLine Visual
 "hi! link SyntasticWarningLine Visual
 "au VimEnter,ColorScheme * exec 'hi! SyntasticErrorSign guifg=red ctermfg=red ' . s:getbg('SyntasticErrorLine')
-"au VimEnter,ColorScheme * exec 'hi! SyntasticWarningSign guifg=yellow ctermfg=yellow ' . s:getbg('SyntasticWarningLine')
+au VimEnter,ColorScheme * exec 'hi! SyntasticWarningSign guifg=yellow ctermfg=220 ' . s:getbg('SignColumn')
 "au VimEnter,ColorScheme * exec 'hi! SyntasticError ' . s:getbg('SyntasticErrorLine')
 "au VimEnter,ColorScheme * exec 'hi! SyntasticWarning ' . s:getbg('SyntasticWarningLine')
 
@@ -237,10 +295,11 @@ let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
 "let g:SuperTabDefaultCompletionType = '<c-n>'
 
 " YouCompleteMe Setup {{{
-set completeopt-=preview
+"set completeopt-=preview
 let g:ycm_confirm_extra_conf = 0
 "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_add_preview_to_completeopt = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 "let g:ycm_semantic_triggers = { 'haskell' : ['.'], 'rust' : ['::', '.'] }
@@ -411,6 +470,14 @@ nnoremap <S-F12> :read !pbpaste<CR>
 " XML format
 nmap <Leader>pxa :%!xmllint --format -<CR>
 
+" Stack Overflow
+nmap <Leader>so :StackOverflow <C-R>=expand("<cword>")<CR><CR>
+
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+" Clamp
+let g:clamp_libclang_file = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
+let g:clamp_highlight_mode = 1
+let g:clamp_autostart = 0
