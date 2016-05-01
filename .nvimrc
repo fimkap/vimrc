@@ -15,6 +15,8 @@ call plug#begin('~/.config/nvim/plugged')
 "Plug 'Valloric/YouCompleteMe'
 Plug 'ervandew/supertab'
 Plug 'Rip-Rip/clang_complete'
+Plug 'https://github.com/SirVer/ultisnips.git'
+Plug 'https://github.com/honza/vim-snippets.git'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
@@ -25,6 +27,7 @@ Plug 'godlygeek/tabular'
 Plug 'bling/vim-airline'
 Plug 'kien/ctrlp.vim'
 "Plug 'junegunn/seoul256.vim'
+Plug 'romainl/Apprentice'
 Plug 'vim-scripts/twilight'
 Plug 'fimkap/newdelek'
 Plug 'fimkap/cocoa.vim'
@@ -43,11 +46,14 @@ Plug 'benekastah/neomake'
 Plug 'mhinz/vim-grepper'
 "Plug 'haifengkao/objc_matchbracket'
 "Plug 'kurkale6ka/vim-chess'
-Plug 'tpope/vim-afterimage'
+"Plug 'tpope/vim-afterimage'
 Plug 'fimkap/vim-mark'
 Plug 'aklt/plantuml-syntax'
 Plug 'vim-scripts/DrawIt'
 Plug 'mickaobrien/vim-stackoverflow'
+Plug 'alvan/vim-closetag'
+Plug 'tpope/vim-commentary'
+Plug 'altercation/vim-colors-solarized'
 " }}}
 
 call plug#end()
@@ -266,7 +272,7 @@ let g:ycm_semantic_triggers = {
 
 "set makeprg=clang\ -x\ objective-c\ \"`<\ .clang_complete`\"\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
 "set makeprg=clang\ -x\ objective-c\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
-set makeprg=xcodebuild\ -workspace\ CellewiseHandset.xcworkspace\ -scheme\ TransferAtHomeEn\ -sdk\ iphoneos9.1\ build
+set makeprg=xcodebuild\ -workspace\ CellewiseHandset.xcworkspace\ -scheme\ TransferAtHomeEn\ -sdk\ iphoneos9.2\ build
 set errorformat=%-G%f:%s:,%-G%f:%l:\ %#error:\ %#(Each\ undeclared\ identifier\ is\ reported\ only%.%#,%-G%f:%l:\ %#error:\ %#for\ each\ function\ it\ appears%.%#,%-GIn\ file\ included%.%#,%-G\ %#from\ %f:%l\,,%f:%l:%c:\ %trror:\ %m,%f:%l:%c:\ %tarning:\ %m,%f:%l:%c:\ %m,%f:%l:\ %trror:\ %m,%f:%l:\ %tarning:\ %m,%f:%l:\ %m
 
 " CtrlP Setup {{{
@@ -414,3 +420,5 @@ nmap <Leader>pxa :%!xmllint --format -<CR>
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml"
