@@ -25,6 +25,7 @@ Plug 'tpope/vim-characterize'
 "Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
 Plug 'bling/vim-airline'
+"Plug 'kien/ctrlp.vim' , { 'on':  'CtrlPBuffer' }
 Plug 'kien/ctrlp.vim'
 "Plug 'junegunn/seoul256.vim'
 Plug 'romainl/Apprentice'
@@ -56,6 +57,7 @@ Plug 'tpope/vim-commentary'
 Plug 'altercation/vim-colors-solarized'
 "Plug 'bbchung/Clamp'
 Plug 'keith/swift.vim'
+Plug 'rhysd/vim-clang-format'
 " }}}
 
 call plug#end()
@@ -200,6 +202,10 @@ let g:neomake_warning_sign = {
     \ 'texthl': 'Special',
     \ }
 
+let g:neomake_vim_enabled_makers = ['vint']
+"autocmd! BufWritePost,BufEnter *.vim Neomake
+autocmd! BufWritePost *.vim Neomake
+
 " Syntastic Setup {{{
 " getbg function {{{
 " gets background of a highlighting group with fallback to SignColumn group
@@ -338,7 +344,7 @@ nnoremap <silent> <space> :CtrlPBuffer<cr>
 nnoremap <silent> <leader>pl :CtrlPLine<cr>
 " }}}
 
-" ClangFormat Setup {{{
+ "ClangFormat Setup {{{
 "let g:clang_format#style_options = {
 "            \ "AccessModifierOffset": -4,
 "            \ "AllowShortLoopsOnASingleLine": "false",
@@ -350,8 +356,25 @@ nnoremap <silent> <leader>pl :CtrlPLine<cr>
 "            \ "ColumnLimit": 80,
 "            \ "TabWidth": 4,
 "            \ "Standard": "C++11" }
-"au FileType c,cpp,objc,objcpp noremap  <silent> <buffer> <leader>f :ClangFormat<cr>
-"au FileType c,cpp,objc,objcpp noremap! <silent> <buffer> <leader>f <c-o>:ClangFormat<cr>
+let g:clang_format#code_style = 'chromium'
+let g:clang_format#style_options = {
+            \ "AlignTrailingComments": "true",
+            \ "AllowShortIfStatementsOnASingleLine": "false",
+            \ "BreakBeforeBraces": "Attach",
+            \ "ColumnLimit": 0,
+            \ "IndentWidth": 4,
+            \ "KeepEmptyLinesAtTheStartOfBlocks": "true",
+            \ "Language": "Cpp",
+            \ "MaxEmptyLinesToKeep": 4,
+            \ "ObjCSpaceAfterProperty": "true",
+            \ "ObjCSpaceBeforeProtocolList": "false",
+            \ "PointerBindsToType": "false",
+            \ "SpacesBeforeTrailingComments": 1,
+            \ "TabWidth": 4,
+            \ "UseTab": "Never" }
+
+au FileType c,cpp,objc,objcpp noremap  <silent> <buffer> <leader>f :ClangFormat<cr>
+au FileType c,cpp,objc,objcpp noremap! <silent> <buffer> <leader>f <c-o>:ClangFormat<cr>
 " }}}
 
 " Bookmarks setup
