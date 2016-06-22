@@ -9,14 +9,19 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 endif
 " }}}
 
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+
 call plug#begin('~/.config/nvim/plugged')
 
 " Plugins {{{
 "Plug 'Valloric/YouCompleteMe'
 Plug 'ervandew/supertab'
-Plug 'Rip-Rip/clang_complete'
-Plug 'https://github.com/SirVer/ultisnips.git'
-Plug 'https://github.com/honza/vim-snippets.git'
+"Plug 'Rip-Rip/clang_complete'
+Plug 'myint/clang-complete'
+"Plug 'https://github.com/SirVer/ultisnips.git'
+"Plug 'https://github.com/honza/vim-snippets.git'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
@@ -58,6 +63,13 @@ Plug 'altercation/vim-colors-solarized'
 "Plug 'bbchung/Clamp'
 Plug 'keith/swift.vim'
 Plug 'rhysd/vim-clang-format'
+Plug 'tmhedberg/SimpylFold'
+Plug 'jreybert/vimagit'
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'itchyny/dictionary.vim'
+Plug 'Shougo/vimproc.vim'
+Plug 'romainl/vim-cool'
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 " }}}
 
 call plug#end()
@@ -75,7 +87,7 @@ set cpoptions+=$            " dollar sign while changing
 set completeopt=longest,menu
 set hls
 set is
-set diffopt=filler,vertical,iwhite
+set diffopt=filler,vertical
 set shiftwidth=4
 set tabstop=4
 set softtabstop=4
@@ -86,7 +98,8 @@ set guifont=SourceCodePro+Powerline+Awesome\ Regular:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
-let c_no_curly_error=1
+set fillchars+=vert:\ 
+let g:c_no_curly_error=1
 " find thw right way to cope with objc parenthesis red highlight 
 hi cParenError ctermbg=231
 "hi DropboxSymbol ctermfg=27 ctermbg=White guibg=White guifg=RoyalBlue3
@@ -308,9 +321,9 @@ let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 "let g:ycm_semantic_triggers = { 'haskell' : ['.'], 'rust' : ['::', '.'] }
-nnoremap <leader>h :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>e :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader>d :YcmCompleter GoToDefinition<CR>
+"nnoremap <leader>h :YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>e :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"nnoremap <leader>d :YcmCompleter GoToDefinition<CR>
 let g:ycm_semantic_triggers = {
  \ 'objc' : ['re!\@"\.*"\s',
  \ 're!\@\w+\.*\w*\s',
@@ -450,7 +463,7 @@ highlight Matchmaker guibg=aquamarine1
 " Copy to clipboard
 vnoremap  <leader>y  "+y
 
-nnoremap gm :e #<CR>
+nnoremap <BS> :e #<CR>
 " Hide tilde (sideeffect - hides all special symbols)
 hi NonText ctermfg=231
 
@@ -504,3 +517,11 @@ let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml"
 let g:clamp_libclang_file = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
 let g:clamp_highlight_mode = 1
 let g:clamp_autostart = 0
+
+" Copy the current file name into clipboard (the name or the full path)
+nmap ,cs :let @*=expand("%:t")<CR>
+nmap ,cl :let @*=expand("%:p")<CR>
+
+"map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+
+nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
