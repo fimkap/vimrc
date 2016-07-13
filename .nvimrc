@@ -18,8 +18,8 @@ call plug#begin('~/.config/nvim/plugged')
 " Plugins {{{
 "Plug 'Valloric/YouCompleteMe'
 Plug 'ervandew/supertab'
-"Plug 'Rip-Rip/clang_complete'
-Plug 'myint/clang-complete'
+Plug 'Rip-Rip/clang_complete'
+"Plug 'myint/clang-complete'
 "Plug 'https://github.com/SirVer/ultisnips.git'
 "Plug 'https://github.com/honza/vim-snippets.git'
 Plug 'tpope/vim-fugitive'
@@ -69,7 +69,8 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'itchyny/dictionary.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'romainl/vim-cool'
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+"Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+Plug 'mitsuse/autocomplete-swift'
 " }}}
 
 call plug#end()
@@ -129,8 +130,8 @@ fun! IsDropbox()
     endif
     return ''
 endfun
-"colorscheme apprentice
-colorscheme newdelek
+colorscheme apprentice
+"colorscheme newdelek
 "colorscheme default
 "let g:seoul256_background = 235
 "colors seoul256
@@ -150,8 +151,8 @@ hi link taskpaperDone Type
 hi link taskpaperCancelled Type
 
 " Airline Setup {{{
-"let g:airline_theme = 'apprentice'
-let g:airline_theme = 'papercolor'
+let g:airline_theme = 'apprentice'
+"let g:airline_theme = 'papercolor'
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -165,10 +166,13 @@ let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
 let g:airline_section_z = '%#__accent_bold#%4l%#__restore__#/%L [%p%%]'
+"let g:airline#extensions#tabline#enabled = 1
 
 "set laststatus=2
 
 " File Type Settings {{{
+
+"let g:deoplete#enable_at_startup = 1
 
 " C++
 "au BufNewFile,BufRead *
@@ -369,22 +373,22 @@ nnoremap <silent> <leader>pl :CtrlPLine<cr>
 "            \ "ColumnLimit": 80,
 "            \ "TabWidth": 4,
 "            \ "Standard": "C++11" }
-let g:clang_format#code_style = 'chromium'
-let g:clang_format#style_options = {
-            \ "AlignTrailingComments": "true",
-            \ "AllowShortIfStatementsOnASingleLine": "false",
-            \ "BreakBeforeBraces": "Attach",
-            \ "ColumnLimit": 0,
-            \ "IndentWidth": 4,
-            \ "KeepEmptyLinesAtTheStartOfBlocks": "true",
-            \ "Language": "Cpp",
-            \ "MaxEmptyLinesToKeep": 4,
-            \ "ObjCSpaceAfterProperty": "true",
-            \ "ObjCSpaceBeforeProtocolList": "false",
-            \ "PointerBindsToType": "false",
-            \ "SpacesBeforeTrailingComments": 1,
-            \ "TabWidth": 4,
-            \ "UseTab": "Never" }
+"let g:clang_format#code_style = 'chromium'
+"let g:clang_format#style_options = {
+"            \ "AlignTrailingComments": "true",
+"            \ "AllowShortIfStatementsOnASingleLine": "false",
+"            \ "BreakBeforeBraces": "Attach",
+"            \ "ColumnLimit": 0,
+"            \ "IndentWidth": 4,
+"            \ "KeepEmptyLinesAtTheStartOfBlocks": "true",
+"            \ "Language": "Cpp",
+"            \ "MaxEmptyLinesToKeep": 4,
+"            \ "ObjCSpaceAfterProperty": "true",
+"            \ "ObjCSpaceBeforeProtocolList": "false",
+"            \ "PointerBindsToType": "false",
+"            \ "SpacesBeforeTrailingComments": 1,
+"            \ "TabWidth": 4,
+"            \ "UseTab": "Never" }
 
 au FileType c,cpp,objc,objcpp noremap  <silent> <buffer> <leader>f :ClangFormat<cr>
 au FileType c,cpp,objc,objcpp noremap! <silent> <buffer> <leader>f <c-o>:ClangFormat<cr>
@@ -415,7 +419,9 @@ let g:goyo_margin_bottom = 2
 "au  User GoyoEnter nested call <SID>goyo_enter()
 "au  User GoyoLeave nested call <SID>goyo_leave()
 "
-nnoremap <leader>g :Goyo<CR>
+nnoremap <leader>G :Goyo<CR>
+nmap     <Leader>gs :Gstatus<CR>gg<c-n>
+nnoremap <Leader>d :Gdiff<CR>
 " }}}
 
 fun! Alt()
@@ -465,7 +471,8 @@ vnoremap  <leader>y  "+y
 
 nnoremap <BS> :e #<CR>
 " Hide tilde (sideeffect - hides all special symbols)
-hi NonText ctermfg=231
+"hi NonText ctermfg=231
+hi NonText ctermfg=234
 
 " Terminal
 nnoremap <leader>t :below 15sp term:///bin/bash<cr>i
@@ -524,4 +531,11 @@ nmap ,cl :let @*=expand("%:p")<CR>
 
 "map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 
-nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
+"nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
+
+if has('autocmd')
+  autocmd VimEnter * nested
+        \ if !argc() && empty(v:this_session) && filereadable('Session.vim') && !&modified |
+        \   source Session.vim |
+        \ endif
+endif
