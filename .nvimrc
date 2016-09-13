@@ -20,8 +20,9 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'ervandew/supertab'
 Plug 'Rip-Rip/clang_complete'
 "Plug 'myint/clang-complete'
-"Plug 'https://github.com/SirVer/ultisnips.git'
-"Plug 'https://github.com/honza/vim-snippets.git'
+" Plug 'https://github.com/SirVer/ultisnips.git'
+" Plug 'https://github.com/honza/vim-snippets.git'
+" Plug 'cfdrake/ultisnips-swift'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
@@ -31,7 +32,7 @@ Plug 'tpope/vim-characterize'
 Plug 'godlygeek/tabular'
 Plug 'bling/vim-airline'
 "Plug 'kien/ctrlp.vim' , { 'on':  'CtrlPBuffer' }
-Plug 'kien/ctrlp.vim'
+"Plug 'kien/ctrlp.vim'
 "Plug 'junegunn/seoul256.vim'
 Plug 'romainl/Apprentice'
 Plug 'vim-scripts/twilight'
@@ -52,7 +53,7 @@ Plug 'benekastah/neomake'
 Plug 'mhinz/vim-grepper'
 Plug 'fimkap/objc_matchbracket'
 "Plug 'kurkale6ka/vim-chess'
-"Plug 'tpope/vim-afterimage'
+Plug 'tpope/vim-afterimage'
 Plug 'fimkap/vim-mark'
 Plug 'aklt/plantuml-syntax'
 Plug 'vim-scripts/DrawIt'
@@ -68,13 +69,23 @@ Plug 'jreybert/vimagit'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'itchyny/dictionary.vim'
 Plug 'Shougo/vimproc.vim'
-Plug 'romainl/vim-cool'
+"Plug 'romainl/vim-cool'
 "Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-Plug 'mitsuse/autocomplete-swift'
+"Plug 'Shougo/neocomplete.vim'
+"Plug 'Shougo/neosnippet'
+"Plug 'Shougo/neosnippet-snippets'
+"Plug 'mitsuse/autocomplete-swift'
+Plug 'idanarye/vim-merginal' ", { 'on': 'MerginalToggle', 'branch': 'develop' }
+Plug 'junegunn/fzf',        { 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 " }}}
 
 call plug#end()
 
+"let mapleader      = ' '
+"let maplocalleader = ' '
+
+let g:python_host_prog = '/usr/bin/python'
 set nobackup
 set nowritebackup
 set noswapfile
@@ -351,14 +362,14 @@ set makeprg=xcodebuild\ -workspace\ CellewiseHandset.xcworkspace\ -scheme\ Trans
 set errorformat=%-G%f:%s:,%-G%f:%l:\ %#error:\ %#(Each\ undeclared\ identifier\ is\ reported\ only%.%#,%-G%f:%l:\ %#error:\ %#for\ each\ function\ it\ appears%.%#,%-GIn\ file\ included%.%#,%-G\ %#from\ %f:%l\,,%f:%l:%c:\ %trror:\ %m,%f:%l:%c:\ %tarning:\ %m,%f:%l:%c:\ %m,%f:%l:\ %trror:\ %m,%f:%l:\ %tarning:\ %m,%f:%l:\ %m
 
 " CtrlP Setup {{{
-let g:ctrlp_user_command = 'ag %s -i -l --nocolor --nogroup --hidden -g ""'
-let g:ctrlp_working_path_mode = 'r'
-let g:ctrlp_by_filename = 1
-let g:ctrlp_max_files = 10000
-let g:ctrlp_follow_symlinks = 1
-let g:ctrlp_match_window = 'max:15,results:20'
-nnoremap <silent> <space> :CtrlPBuffer<cr>
-nnoremap <silent> <leader>pl :CtrlPLine<cr>
+"let g:ctrlp_user_command = 'ag %s -i -l --nocolor --nogroup --hidden -g ""'
+"let g:ctrlp_working_path_mode = 'r'
+"let g:ctrlp_by_filename = 1
+"let g:ctrlp_max_files = 10000
+"let g:ctrlp_follow_symlinks = 1
+"let g:ctrlp_match_window = 'max:15,results:20'
+"nnoremap <silent> <space> :CtrlPBuffer<cr>
+"nnoremap <silent> <leader>pl :CtrlPLine<cr>
 " }}}
 
  "ClangFormat Setup {{{
@@ -479,11 +490,11 @@ nnoremap <leader>t :below 15sp term:///bin/bash<cr>i
 tnoremap <F1> <C-\><C-n>
 
 " QuickLook in CtrlP
-let g:ctrlp_buffer_func = { 'enter': 'CtrlpMaps' }
-
-func! CtrlpMaps()
-    nnoremap <buffer> <silent> <c-q> :call <sid>QuickLook()<cr>
-endfunc
+"let g:ctrlp_buffer_func = { 'enter': 'CtrlpMaps' }
+"
+"func! CtrlpMaps()
+"    nnoremap <buffer> <silent> <c-q> :call <sid>QuickLook()<cr>
+"endfunc
 
 func! s:QuickLook()
     let line = getline('.')
@@ -539,3 +550,49 @@ if has('autocmd')
         \   source Session.vim |
         \ endif
 endif
+
+"autocmd FileType swift imap <buffer> <C-k> <Plug>(autocomplete_swift_jump_to_placeholder)
+autocmd FileType swift let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+xmap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\>"
+
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\<TAB>"
+
+" FZF
+if has('nvim')
+  let $FZF_DEFAULT_OPTS .= ' --inline-info'
+  " let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+endif
+
+" File preview using CodeRay (http://coderay.rubychan.de/)
+let g:fzf_files_options =
+  \ '--preview "(coderay {} || termpix --width 50 {} || cat {}) 2> /dev/null | head -'.&lines.'"'
+
+" nnoremap <silent> <Leader><Leader> :Files<CR>
+nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
+nnoremap <silent> <Leader>C        :Colors<CR>
+nnoremap <silent> <Leader><Enter>  :Buffers<CR>
+nnoremap <silent> <Leader>ag       :Ag <C-R><C-W><CR>
+nnoremap <silent> <Leader>AG       :Ag <C-R><C-A><CR>
+nnoremap <silent> <Leader>`        :Marks<CR>
+" nnoremap <silent> q: :History:<CR>
+" nnoremap <silent> q/ :History/<CR>
+
+inoremap <expr> <c-x><c-t> fzf#complete('tmuxwords.rb --all-but-current --scroll 500 --min 5')
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+command! Plugs call fzf#run({
+  \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home."/".v:val'),
+  \ 'options': '--delimiter / --nth -1',
+  \ 'down':    '~40%',
+  \ 'sink':    'Explore'})
