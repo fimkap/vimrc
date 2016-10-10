@@ -18,6 +18,7 @@ Plug 'Rip-Rip/clang_complete'
 "Plug 'justmao945/vim-clang'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'cfdrake/ultisnips-swift'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
@@ -35,6 +36,7 @@ Plug 'fimkap/cocoa.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'fimkap/syntastic'
+"Plug 'tokorom/syntastic-swiftlint.vim'
 Plug 'b4winckler/vim-objc'
 "Plug 'vimwiki/vimwiki'
 Plug 'qstrahl/vim-matchmaker'
@@ -54,9 +56,20 @@ Plug 'mickaobrien/vim-stackoverflow'
 Plug 'romainl/Apprentice'
 "Plug 'bbchung/Clamp'
 Plug 'keith/swift.vim'
+Plug 'tmhedberg/SimpylFold'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'idanarye/vim-merginal'
+Plug 'mitsuse/autocomplete-swift'
+"Plug '~/dev/swift-utils-vim/utils/utilsvim'
+"Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+"Plug 'kballard/vim-swift'
 " }}}
 
 call plug#end()
+
+let mapleader      = ' '
+let maplocalleader = ' '
 
 set nobackup
 set nowritebackup
@@ -82,6 +95,7 @@ set guifont=SourceCodePro+Powerline+Awesome\ Regular:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
+"set noshowmode
 let c_no_curly_error=1
 " find thw right way to cope with objc parenthesis red highlight 
 hi cParenError ctermbg=231
@@ -112,8 +126,8 @@ fun! IsDropbox()
     endif
     return ''
 endfun
-"colorscheme apprentice
-colorscheme newdelek
+colorscheme apprentice
+"colorscheme newdelek
 "colorscheme default
 "let g:seoul256_background = 235
 "colors seoul256
@@ -123,18 +137,23 @@ colorscheme newdelek
 
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
+let g:gitgutter_sign_added = '│ '
+let g:gitgutter_sign_modified = '┋ '
+let g:gitgutter_sign_removed = '╏ '
+let g:gitgutter_sign_modified_removed = '╏ '
 "let g:gitgutter_highlight_lines    = 1
-highlight GitGutterAdd ctermbg=158 ctermfg=158 guibg=#e1f8e1 guifg=#e1f8e1
-highlight GitGutterChange ctermbg=117 ctermfg=117 guibg=#ffb2ff guifg=#ffb2ff
-highlight GitGutterDelete ctermbg=196 ctermfg=196 guibg=#ff8080 guifg=#ff8080
-highlight GitGutterChangeDelete ctermbg=147 ctermfg=147 guibg=#00afff guifg=#00afff
+highlight GitGutterAdd ctermbg=bg ctermfg=22 guibg=#e1f8e1 guifg=#e1f8e1
+"highlight GitGutterAdd ctermbg=237 ctermfg=237 guibg=#e1f8e1 guifg=#e1f8e1
+highlight GitGutterChange ctermbg=bg ctermfg=18 guibg=#ffb2ff guifg=#ffb2ff
+highlight GitGutterDelete ctermbg=bg ctermfg=88 guibg=#ff8080 guifg=#ff8080
+highlight GitGutterChangeDelete ctermbg=bg ctermfg=54 guibg=#00afff guifg=#00afff
 
 hi link taskpaperDone Type
 hi link taskpaperCancelled Type
 
 " Airline Setup {{{
-"let g:airline_theme = 'apprentice'
-let g:airline_theme = 'papercolor'
+let g:airline_theme = 'apprentice'
+"let g:airline_theme = 'papercolor'
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -143,11 +162,12 @@ let g:airline#extensions#hunks#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.branch = ''
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_section_z = '%#__accent_bold#%4l%#__restore__#/%L [%p%%]'
+let g:airline_left_sep = ' '
+let g:airline_left_alt_sep = ' '
+let g:airline_right_sep = ' '
+let g:airline_right_alt_sep = ' '
+"let g:airline_section_z = '%#__accent_bold#%4l%#__restore__#/%L [%p%%]'
+let g:airline_section_a = ''
 
 "set laststatus=2
 
@@ -182,6 +202,18 @@ let g:neomake_objc_clang_maker = {
 "
 let g:neomake_objc_enabled_makers = ['clang']
 "autocmd! BufWritePost objc Neomake
+
+let g:neomake_swift_xcrun_maker = {
+        \ 'exe' : 'xcrun',
+        \ 'args': ['-sdk','iphonesimulator10.0','swiftc','-target','x86_64-apple-ios9.3'],
+        \ 'errorformat':
+            \ '%E%f:%l:%c: error: %m,' .
+            \ '%W%f:%l:%c: warning: %m,' .
+            \ '%Z%\s%#^~%#,' .
+            \ '%-G%.%#',
+        \ }
+let g:neomake_swift_enabled_makers = ['xcrun']
+autocmd! BufWritePost,BufEnter *.swift Neomake
 
 let g:neomake_javascript_jshint_maker = {
     \ 'args': ['--verbose'],
@@ -237,6 +269,8 @@ set statusline+=%#Search#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 "
+"let g:syntastic_swift_checkers = ['swiftlint']
+
 let g:syntastic_enable_signs=1
 "let g:syntastic_objc_config_file = '.clang_complete'
 ""let g:syntastic_objc_checkers = ['clang']
@@ -411,7 +445,7 @@ endfun
 
 :command! -nargs=* -complete=file Ag cex [] | vertical bo 50 copen | Grepper! -tool ag -query <args>
 ":command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 50 copen
-nmap gk :Grepper! -tool ag -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
+"nmap gk :Grepper! -tool ag -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
 
 :command! -nargs=* -complete=file Look cex [] | vertical bo 50 copen | Grepper! -tool git -query <args>
 nmap gl :Grepper! -tool git -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
@@ -430,7 +464,7 @@ vnoremap  <leader>y  "+y
 
 nnoremap gm :e #<CR>
 " Hide tilde (sideeffect - hides all special symbols)
-hi NonText ctermfg=231
+hi NonText ctermfg=235
 
 " Terminal
 nnoremap <leader>t :below 15sp term:///bin/bash<cr>i
@@ -456,6 +490,12 @@ if $TERM_PROGRAM == 'iTerm.app'
 endif
 
 " LLDB
+let g:lldb#sign#bp_symbol = ''
+let g:lldb#sign#pc_symbol = ''
+highlight LLSelectedPCLine ctermfg=235 ctermbg=235
+nmap <Leader>ll :LLsession new<CR>
+nmap <Leader>md :LLmode debug<CR>
+nmap <Leader>mc :LLmode code<CR>
 nmap <F9> <Plug>LLBreakSwitch
 nnoremap <F6> :LL step<CR>
 nnoremap <F5> :LL continue<CR>
@@ -481,3 +521,67 @@ map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans
 let g:clamp_libclang_file = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
 let g:clamp_highlight_mode = 1
 let g:clamp_autostart = 0
+
+" tagbar
+"nmap <F8> :TagbarToggle<CR>
+"let g:tagbar_type_swift = {
+"  \ 'ctagstype': 'swift',
+"  \ 'kinds' : [
+"    \ 'n:Enums',
+"    \ 't:Typealiases',
+"    \ 'p:Protocols',
+"    \ 's:Structs',
+"    \ 'c:Classes',
+"    \ 'f:Functions',
+"    \ 'v:Variables',
+"    \ 'e:Extensions'
+"  \ ],
+"  \ 'sort' : 0
+"  \ }
+
+nnoremap <leader>c :cclose<bar>lclose<cr>
+
+" ============================================================================
+" FZF {{{
+" ============================================================================
+
+if has('nvim')
+  let $FZF_DEFAULT_OPTS .= ' --inline-info'
+  let g:fzf_layout = { 'down': '~60%' }
+  "let $FZF_TMUX_HEIGHT = '80%'
+  " let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+endif
+
+" File preview using CodeRay (http://coderay.rubychan.de/)
+"let g:fzf_files_options =
+"  \ '--preview "(coderay {} || cat {}) 2> /dev/null | head -'.&lines.'"'
+let g:fzf_files_options =
+  \ '--preview "(termpix --height '.&lines.' {} || cat {}) 2> /dev/null "'
+
+" nnoremap <silent> <Leader><Leader> :Files<CR>
+nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
+nnoremap <silent> <Leader>C        :Colors<CR>
+nnoremap <silent> <Leader><Enter>  :Buffers<CR>
+nnoremap <silent> <Leader>ag       :Ag <C-R><C-W><CR>
+nnoremap <silent> <Leader>AG       :Ag <C-R><C-A><CR>
+nnoremap <silent> <Leader>`        :Marks<CR>
+" nnoremap <silent> q: :History:<CR>
+" nnoremap <silent> q/ :History/<CR>
+
+"inoremap <expr> <c-x><c-t> fzf#complete('tmuxwords.rb --all-but-current --scroll 500 --min 5')
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+command! Plugs call fzf#run({
+  \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home."/".v:val'),
+  \ 'options': '--delimiter / --nth -1',
+  \ 'down':    '~40%',
+  \ 'sink':    'Explore'})
+
+" }}}
