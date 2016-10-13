@@ -103,7 +103,8 @@ hi cParenError ctermbg=231
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
 "set rulerformat=%30(%#dropboxIcon#%{IsDropbox()}%*%#Comment#%{GetGitBranch()}%*\ %l,%c%V\ %p%%%)
-set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
+"set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
+"set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus('NeoMk:\ ')}
 
 fun! GetGitBranch()
     let head = fugitive#head(7)
@@ -203,16 +204,16 @@ let g:neomake_objc_clang_maker = {
 let g:neomake_objc_enabled_makers = ['clang']
 "autocmd! BufWritePost objc Neomake
 
-let g:neomake_swift_xcrun_maker = {
-        \ 'exe' : 'xcrun',
-        \ 'args': ['-sdk','iphonesimulator10.0','swiftc','-target','x86_64-apple-ios9.3'],
+let g:neomake_swift_swiftc_maker = {
+        \ 'exe' : 'swift',
+        \ 'args': ['-frontend','-c'] + split(expand('/Users/fimkap/dev/LucidDreams/LucidDreams/*.swift')) + ['-sdk','/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.0.sdk','-target','x86_64-apple-ios9.3','-parse','-primary-file'],
         \ 'errorformat':
             \ '%E%f:%l:%c: error: %m,' .
             \ '%W%f:%l:%c: warning: %m,' .
             \ '%Z%\s%#^~%#,' .
             \ '%-G%.%#',
         \ }
-let g:neomake_swift_enabled_makers = ['xcrun']
+let g:neomake_swift_enabled_makers = ['swiftc']
 autocmd! BufWritePost,BufEnter *.swift Neomake
 
 let g:neomake_javascript_jshint_maker = {
@@ -221,13 +222,17 @@ let g:neomake_javascript_jshint_maker = {
     \ }
 let g:neomake_javascript_enabled_makers = ['jshint']
 autocmd! BufWritePost,BufEnter *.js Neomake
+
+highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=White guibg=Red
+highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=White guibg=Yellow
+
 let g:neomake_error_sign = {
-    \ 'text': '✕',
-    \ 'texthl': 'ErrorMsg',
+    \ 'text': '',
+    \ 'texthl': 'NeomakeErrorSign',
     \ }
 let g:neomake_warning_sign = {
     \ 'text': '',
-    \ 'texthl': 'Special',
+    \ 'texthl': 'NeomakeWarningSign',
     \ }
 
 " Syntastic Setup {{{
