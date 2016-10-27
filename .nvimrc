@@ -53,7 +53,7 @@ Plug 'fimkap/vim-mark'
 Plug 'aklt/plantuml-syntax'
 Plug 'vim-scripts/DrawIt'
 Plug 'mickaobrien/vim-stackoverflow'
-Plug 'romainl/Apprentice'
+Plug 'romainl/Apprentice', { 'branch': 'fancylines-and-neovim' }
 "Plug 'bbchung/Clamp'
 Plug 'keith/swift.vim'
 Plug 'tmhedberg/SimpylFold'
@@ -61,6 +61,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'idanarye/vim-merginal'
 Plug 'mitsuse/autocomplete-swift'
+Plug 'junegunn/vim-pseudocl'
+Plug 'junegunn/vim-oblique'
 "Plug '~/dev/swift-utils-vim/utils/utilsvim'
 "Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 "Plug 'kballard/vim-swift'
@@ -138,16 +140,16 @@ colorscheme apprentice
 
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
-let g:gitgutter_sign_added = '│ '
-let g:gitgutter_sign_modified = '┋ '
-let g:gitgutter_sign_removed = '╏ '
-let g:gitgutter_sign_modified_removed = '╏ '
+let g:gitgutter_sign_added = '▋ '
+let g:gitgutter_sign_modified = '▋ '
+let g:gitgutter_sign_removed = '▋ '
+let g:gitgutter_sign_modified_removed = '▋ '
 "let g:gitgutter_highlight_lines    = 1
-highlight GitGutterAdd ctermbg=bg ctermfg=22 guibg=#e1f8e1 guifg=#e1f8e1
+highlight GitGutterAdd ctermbg=234 ctermfg=108 guibg=#e1f8e1 guifg=#e1f8e1
 "highlight GitGutterAdd ctermbg=237 ctermfg=237 guibg=#e1f8e1 guifg=#e1f8e1
-highlight GitGutterChange ctermbg=bg ctermfg=18 guibg=#ffb2ff guifg=#ffb2ff
-highlight GitGutterDelete ctermbg=bg ctermfg=88 guibg=#ff8080 guifg=#ff8080
-highlight GitGutterChangeDelete ctermbg=bg ctermfg=54 guibg=#00afff guifg=#00afff
+highlight GitGutterChange ctermbg=234 ctermfg=60 guibg=#ffb2ff guifg=#ffb2ff
+highlight GitGutterDelete ctermbg=234 ctermfg=131 guibg=#ff8080 guifg=#ff8080
+highlight GitGutterChangeDelete ctermbg=234 ctermfg=60 guibg=#00afff guifg=#00afff
 
 hi link taskpaperDone Type
 hi link taskpaperCancelled Type
@@ -206,7 +208,7 @@ let g:neomake_objc_enabled_makers = ['clang']
 
 let g:neomake_swift_swiftc_maker = {
         \ 'exe' : 'swift',
-        \ 'args': ['-frontend','-c'] + split(expand('/Users/fimkap/dev/LucidDreams/LucidDreams/*.swift')) + ['-sdk','/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.0.sdk','-target','x86_64-apple-ios9.3','-parse','-primary-file'],
+        \ 'args': ['-frontend','-c'] + split(expand('~/dev/LucidDreams/LucidDreams/*.swift')) + ['-sdk','/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.0.sdk','-target','x86_64-apple-ios9.3','-parse','-primary-file'],
         \ 'errorformat':
             \ '%E%f:%l:%c: error: %m,' .
             \ '%W%f:%l:%c: warning: %m,' .
@@ -214,7 +216,7 @@ let g:neomake_swift_swiftc_maker = {
             \ '%-G%.%#',
         \ }
 let g:neomake_swift_enabled_makers = ['swiftc']
-autocmd! BufWritePost,BufEnter *.swift Neomake
+autocmd! BufWritePost *.swift Neomake
 
 let g:neomake_javascript_jshint_maker = {
     \ 'args': ['--verbose'],
@@ -330,8 +332,8 @@ let g:clang_complete_macros = 1
 let g:clang_complete_patterns = 1
 
 " supertab
-let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
-"let g:SuperTabDefaultCompletionType = '<c-n>'
+"let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
+let g:SuperTabDefaultCompletionType = '<c-x><c-n>'
 
 " YouCompleteMe Setup {{{
 "set completeopt-=preview
@@ -490,8 +492,13 @@ endfunc
 
 vnoremap // y/<C-R>"<CR>
 " True Color for iTerm2
-if $TERM_PROGRAM == 'iTerm.app'
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+"if $TERM_PROGRAM == 'iTerm.app'
+"    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+"endif
+if $TERM_PROGRAM == 'iTerm.app' && has("termguicolors") && has("nvim") " set true colors on NeoVim
+    set t_8f=u;%lu;%lum
+    set t_8b=u;%lu;%lum
+    set termguicolors
 endif
 
 " LLDB
