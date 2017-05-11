@@ -24,19 +24,21 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-characterize'
-"Plug 'tpope/vim-surround'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-rvm'
+Plug 'vim-ruby/vim-ruby'
+Plug 'leafgarland/typescript-vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-repeat'
 Plug 'godlygeek/tabular'
 Plug 'bling/vim-airline'
-Plug 'kien/ctrlp.vim'
 "Plug 'junegunn/seoul256.vim'
-Plug 'vim-scripts/twilight'
 Plug 'fimkap/newdelek'
 Plug 'fimkap/cocoa.vim'
-"Plug 'rizzatti/dash.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
-Plug 'fimkap/syntastic'
-"Plug 'tokorom/syntastic-swiftlint.vim'
+"Plug 'fimkap/syntastic'
 Plug 'b4winckler/vim-objc'
 "Plug 'vimwiki/vimwiki'
 Plug 'qstrahl/vim-matchmaker'
@@ -54,18 +56,29 @@ Plug 'aklt/plantuml-syntax'
 Plug 'vim-scripts/DrawIt'
 Plug 'mickaobrien/vim-stackoverflow'
 Plug 'romainl/Apprentice', { 'branch': 'fancylines-and-neovim' }
-"Plug 'bbchung/Clamp'
 Plug 'keith/swift.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'idanarye/vim-merginal'
-Plug 'mitsuse/autocomplete-swift'
 Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
-"Plug '~/dev/swift-utils-vim/utils/utilsvim'
-"Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
-"Plug 'kballard/vim-swift'
+Plug 'rust-lang/rust.vim'
+"Plug 'itchyny/calendar.vim'
+Plug 'metakirby5/codi.vim'
+Plug 'rakr/vim-two-firewatch'
+Plug 'nathanaelkane/vim-indent-guides', { 'for' : 'haml' }
+Plug 'alvan/vim-closetag'
+" Plug 'osyo-manga/vim-monster'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'othree/html5.vim'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Plug 'landaire/deoplete-swift', { 'for' : 'swift' }
+" Plug 'mitsuse/autocomplete-swift'
+" Plug 'tomasr/molokai'
+" Plug 'maralla/completor.vim'
+" Plug 'maralla/completor-swift'
 " }}}
 
 call plug#end()
@@ -87,9 +100,9 @@ set completeopt=longest,menu
 set hls
 set is
 set diffopt=filler,vertical,iwhite
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
 set expandtab
 set report=1
 "set guifont=PT\ Mono:h12
@@ -97,6 +110,8 @@ set guifont=SourceCodePro+Powerline+Awesome\ Regular:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
+set mouse=a
+autocmd BufNewFile,BufRead *.swift set filetype=swift
 "set noshowmode
 let c_no_curly_error=1
 " find thw right way to cope with objc parenthesis red highlight 
@@ -206,9 +221,26 @@ let g:neomake_objc_clang_maker = {
 let g:neomake_objc_enabled_makers = ['clang']
 "autocmd! BufWritePost objc Neomake
 
+" Swift maker. To be moved and based on swift filetype.
+let swift_dic = {}
+if filereadable('.neomake_swift')
+    let lines = readfile('.neomake_swift')
+    for line in lines
+        let len = strlen(line)
+        let eq_position = match(line, '=')
+        let key = strpart(line, 0, eq_position)
+        let value = strpart(line, eq_position+1, len)
+        let swift_dic[key] = value
+    endfor
+endif
+if !has_key(swift_dic, 'sdk')
+    let swift_dic['sdk'] = system('xcrun --show-sdk-path')
+endif
+let swift_args = ['-frontend','-c'] + (has_key(swift_dic,'files') ?  split(expand(swift_dic['files'])) : []) + ['-sdk'] + split(swift_dic['sdk']) + (has_key(swift_dic,'target') ? ['-target'] + split(swift_dic['target']) : []) + ['-parse','-primary-file']
+
 let g:neomake_swift_swiftc_maker = {
         \ 'exe' : 'swift',
-        \ 'args': ['-frontend','-c'] + split(expand('~/dev/LucidDreams/LucidDreams/*.swift')) + ['-sdk','/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.0.sdk','-target','x86_64-apple-ios9.3','-parse','-primary-file'],
+        \ 'args': swift_args,
         \ 'errorformat':
             \ '%E%f:%l:%c: error: %m,' .
             \ '%W%f:%l:%c: warning: %m,' .
@@ -240,85 +272,85 @@ let g:neomake_warning_sign = {
 " Syntastic Setup {{{
 " getbg function {{{
 " gets background of a highlighting group with fallback to SignColumn group
-function! s:getbg(group)
-    if has("gui_running")
-        let l:mode = 'gui'
-        let l:validation = '\w\+\|#\x\+'
-    else
-        let l:mode = 'cterm'
-        let l:validation = '\w\+'
-    endif
-
-    if synIDattr(synIDtrans(hlID(a:group)), 'reverse', l:mode)
-        let l:bg = synIDattr(synIDtrans(hlID(a:group)), 'fg', l:mode)
-    else
-        let l:bg = synIDattr(synIDtrans(hlID(a:group)), 'bg', l:mode)
-    endif
-
-    if l:bg == '-1' || l:bg !~ l:validation
-        if synIDattr(synIDtrans(hlID('SignColumn')), 'reverse', l:mode)
-            let l:bg = synIDattr(synIDtrans(hlID('SignColumn')), 'fg', l:mode)
-        else
-            let l:bg = synIDattr(synIDtrans(hlID('SignColumn')), 'bg', l:mode)
-        endif
-    endif
-
-    if l:bg == '-1' || l:bg !~ l:validation
-        return ''
-    endif
-
-    return l:mode . 'bg=' . l:bg
-endfunction
+"function! s:getbg(group)
+"    if has("gui_running")
+"        let l:mode = 'gui'
+"        let l:validation = '\w\+\|#\x\+'
+"    else
+"        let l:mode = 'cterm'
+"        let l:validation = '\w\+'
+"    endif
+"
+"    if synIDattr(synIDtrans(hlID(a:group)), 'reverse', l:mode)
+"        let l:bg = synIDattr(synIDtrans(hlID(a:group)), 'fg', l:mode)
+"    else
+"        let l:bg = synIDattr(synIDtrans(hlID(a:group)), 'bg', l:mode)
+"    endif
+"
+"    if l:bg == '-1' || l:bg !~ l:validation
+"        if synIDattr(synIDtrans(hlID('SignColumn')), 'reverse', l:mode)
+"            let l:bg = synIDattr(synIDtrans(hlID('SignColumn')), 'fg', l:mode)
+"        else
+"            let l:bg = synIDattr(synIDtrans(hlID('SignColumn')), 'bg', l:mode)
+"        endif
+"    endif
+"
+"    if l:bg == '-1' || l:bg !~ l:validation
+"        return ''
+"    endif
+"
+"    return l:mode . 'bg=' . l:bg
+"endfunction
 "}}}
 
 " syntastic
-set statusline+=%#Search#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+"set statusline+=%#Search#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 "
 "let g:syntastic_swift_checkers = ['swiftlint']
 
-let g:syntastic_enable_signs=1
-"let g:syntastic_objc_config_file = '.clang_complete'
-""let g:syntastic_objc_checkers = ['clang']
-let g:syntastic_objc_compiler = 'clang'
-"let g:syntastic_objc_config_file = '.clang_complete'
-"let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
-let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only'
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_objc_remove_include_errors = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-let g:syntastic_error_symbol = '✕'
-"let g:syntastic_warning_symbol = '⧍'
-let g:syntastic_warning_symbol = ''
-
-fun! Analyze()
-    let g:syntastic_objc_compiler_options = '`< .clang_complete` --analyze -arch arm64'
-    "highlight SyntasticWarningSign guifg=White guibg=RoyalBlue1
-    "let g:syntastic_warning_symbol = '⤷'
-    write
-    let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
-    "highlight SyntasticWarningSign guifg=Black guibg=yellow
-    "let g:syntastic_warning_symbol = '»'
-endfun
-:command! Analyze :call Analyze()
-
-"highlight SyntasticWarningSign ctermfg=220 ctermbg=231 guifg=Black guibg=Yellow
-"highlight SyntasticWarningSign ctermfg=220 s:getbg('SignColumn') guifg=Black guibg=Yellow
-"highlight SyntasticWarningLine ctermbg=230 guibg=Yellow
-highlight SyntasticErrorSign ctermfg=231 ctermbg=red guifg=White guibg=Red
-
-"hi! link SyntasticErrorLine Visual
-"hi! link SyntasticWarningLine Visual
-"au VimEnter,ColorScheme * exec 'hi! SyntasticErrorSign guifg=red ctermfg=red ' . s:getbg('SyntasticErrorLine')
-au VimEnter,ColorScheme * exec 'hi! SyntasticWarningSign guifg=yellow ctermfg=220 ' . s:getbg('SignColumn')
-"au VimEnter,ColorScheme * exec 'hi! SyntasticError ' . s:getbg('SyntasticErrorLine')
-"au VimEnter,ColorScheme * exec 'hi! SyntasticWarning ' . s:getbg('SyntasticWarningLine')
-
-"let g:syntastic_mode_map = { "mode": "active", "passive_filetypes": ["go", "html"] }
-" }}}
+"let g:syntastic_enable_signs=1
+""let g:syntastic_objc_config_file = '.clang_complete'
+"""let g:syntastic_objc_checkers = ['clang']
+"let g:syntastic_objc_compiler = 'clang'
+""let g:syntastic_objc_config_file = '.clang_complete'
+""let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
+"let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only'
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 0
+"let g:syntastic_objc_remove_include_errors = 1
+""let g:syntastic_check_on_open = 1
+""let g:syntastic_check_on_wq = 0
+"let g:syntastic_error_symbol = '✕'
+""let g:syntastic_warning_symbol = '⧍'
+"let g:syntastic_warning_symbol = ''
+"
+"fun! Analyze()
+"    let g:syntastic_objc_compiler_options = '`< .clang_complete` --analyze -arch arm64'
+"    "highlight SyntasticWarningSign guifg=White guibg=RoyalBlue1
+"    "let g:syntastic_warning_symbol = '⤷'
+"    write
+"    let g:syntastic_objc_compiler_options = '`< .clang_complete` -fsyntax-only -arch arm64'
+"    "highlight SyntasticWarningSign guifg=Black guibg=yellow
+"    "let g:syntastic_warning_symbol = '»'
+"endfun
+":command! Analyze :call Analyze()
+"
+""highlight SyntasticWarningSign ctermfg=220 ctermbg=231 guifg=Black guibg=Yellow
+""highlight SyntasticWarningSign ctermfg=220 s:getbg('SignColumn') guifg=Black guibg=Yellow
+""highlight SyntasticWarningLine ctermbg=230 guibg=Yellow
+"highlight SyntasticErrorSign ctermfg=231 ctermbg=red guifg=White guibg=Red
+"
+""hi! link SyntasticErrorLine Visual
+""hi! link SyntasticWarningLine Visual
+""au VimEnter,ColorScheme * exec 'hi! SyntasticErrorSign guifg=red ctermfg=red ' . s:getbg('SyntasticErrorLine')
+"au VimEnter,ColorScheme * exec 'hi! SyntasticWarningSign guifg=yellow ctermfg=220 ' . s:getbg('SignColumn')
+""au VimEnter,ColorScheme * exec 'hi! SyntasticError ' . s:getbg('SyntasticErrorLine')
+""au VimEnter,ColorScheme * exec 'hi! SyntasticWarning ' . s:getbg('SyntasticWarningLine')
+"
+""let g:syntastic_mode_map = { "mode": "active", "passive_filetypes": ["go", "html"] }
+"" }}}
 
 " clang
 let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib'
@@ -334,51 +366,42 @@ let g:clang_complete_patterns = 1
 " supertab
 "let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
 let g:SuperTabDefaultCompletionType = '<c-x><c-n>'
+autocmd! BufEnter *.cc,*.cpp let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
 
-" YouCompleteMe Setup {{{
-"set completeopt-=preview
-let g:ycm_confirm_extra_conf = 0
-"let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-let g:ycm_seed_identifiers_with_syntax = 1
-let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-"let g:ycm_semantic_triggers = { 'haskell' : ['.'], 'rust' : ['::', '.'] }
-nnoremap <leader>h :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>e :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader>d :YcmCompleter GoToDefinition<CR>
-let g:ycm_semantic_triggers = {
- \ 'objc' : ['re!\@"\.*"\s',
- \ 're!\@\w+\.*\w*\s',
- \ 're!\@\(\w+\.*\w*\)\s',
- \ 're!\@\(\s*',
- \ 're!\@\[.*\]\s',
- \ 're!\@\[\s*',
- \ 're!\@\{.*\}\s',
- \ 're!\@\{\s*',
- \ "re!\@\’.*\’\s",
- \ '#ifdef ',
- \ 're!:\s*',
- \ 're!=\s*',
- \ 're!,\s*', ],
- \ }
-" }}}
+"" YouCompleteMe Setup {{{
+""set completeopt-=preview
+"let g:ycm_confirm_extra_conf = 0
+""let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+"let g:ycm_seed_identifiers_with_syntax = 1
+"let g:ycm_add_preview_to_completeopt = 1
+"let g:ycm_autoclose_preview_window_after_insertion = 1
+"let g:ycm_autoclose_preview_window_after_completion = 1
+""let g:ycm_semantic_triggers = { 'haskell' : ['.'], 'rust' : ['::', '.'] }
+"nnoremap <leader>h :YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>e :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"nnoremap <leader>d :YcmCompleter GoToDefinition<CR>
+"let g:ycm_semantic_triggers = {
+" \ 'objc' : ['re!\@"\.*"\s',
+" \ 're!\@\w+\.*\w*\s',
+" \ 're!\@\(\w+\.*\w*\)\s',
+" \ 're!\@\(\s*',
+" \ 're!\@\[.*\]\s',
+" \ 're!\@\[\s*',
+" \ 're!\@\{.*\}\s',
+" \ 're!\@\{\s*',
+" \ "re!\@\’.*\’\s",
+" \ '#ifdef ',
+" \ 're!:\s*',
+" \ 're!=\s*',
+" \ 're!,\s*', ],
+" \ }
+"" }}}
+"
+""set makeprg=clang\ -x\ objective-c\ \"`<\ .clang_complete`\"\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
+""set makeprg=clang\ -x\ objective-c\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
+"set makeprg=xcodebuild\ -workspace\ CellewiseHandset.xcworkspace\ -scheme\ TransferAtHomeEn\ -sdk\ iphoneos9.1\ build
+"set errorformat=%-G%f:%s:,%-G%f:%l:\ %#error:\ %#(Each\ undeclared\ identifier\ is\ reported\ only%.%#,%-G%f:%l:\ %#error:\ %#for\ each\ function\ it\ appears%.%#,%-GIn\ file\ included%.%#,%-G\ %#from\ %f:%l\,,%f:%l:%c:\ %trror:\ %m,%f:%l:%c:\ %tarning:\ %m,%f:%l:%c:\ %m,%f:%l:\ %trror:\ %m,%f:%l:\ %tarning:\ %m,%f:%l:\ %m
 
-"set makeprg=clang\ -x\ objective-c\ \"`<\ .clang_complete`\"\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
-"set makeprg=clang\ -x\ objective-c\ -fsyntax-only\ -arch\ arm64\ -I.\ -I..\ -Iinclude\ -Iincludes\ -I../include\ -I../includes\ %
-set makeprg=xcodebuild\ -workspace\ CellewiseHandset.xcworkspace\ -scheme\ TransferAtHomeEn\ -sdk\ iphoneos9.1\ build
-set errorformat=%-G%f:%s:,%-G%f:%l:\ %#error:\ %#(Each\ undeclared\ identifier\ is\ reported\ only%.%#,%-G%f:%l:\ %#error:\ %#for\ each\ function\ it\ appears%.%#,%-GIn\ file\ included%.%#,%-G\ %#from\ %f:%l\,,%f:%l:%c:\ %trror:\ %m,%f:%l:%c:\ %tarning:\ %m,%f:%l:%c:\ %m,%f:%l:\ %trror:\ %m,%f:%l:\ %tarning:\ %m,%f:%l:\ %m
-
-" CtrlP Setup {{{
-let g:ctrlp_user_command = 'ag %s -i -l --nocolor --nogroup --hidden -g ""'
-let g:ctrlp_working_path_mode = 'r'
-let g:ctrlp_by_filename = 1
-let g:ctrlp_max_files = 10000
-let g:ctrlp_follow_symlinks = 1
-let g:ctrlp_match_window = 'max:15,results:20'
-nnoremap <silent> <space> :CtrlPBuffer<cr>
-nnoremap <silent> <leader>pl :CtrlPLine<cr>
-" }}}
 
 " ClangFormat Setup {{{
 "let g:clang_format#style_options = {
@@ -450,7 +473,7 @@ endfun
 ":command! -nargs=+ Look :silent Ggrep! <args> | vertical bo 50 cwindow
 :command! -nargs=+ LookCached :silent Ggrep! --cached <args> | vertical bo 50 cwindow
 
-:command! -nargs=* -complete=file Ag cex [] | vertical bo 50 copen | Grepper! -tool ag -query <args>
+" :command! -nargs=* -complete=file Ag cex [] | vertical bo 50 copen | Grepper! -tool ag -query <args>
 ":command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 50 copen
 "nmap gk :Grepper! -tool ag -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
 
@@ -469,26 +492,13 @@ highlight Matchmaker guibg=aquamarine1
 " Copy to clipboard
 vnoremap  <leader>y  "+y
 
-nnoremap gm :e #<CR>
+nnoremap <BS> :e #<CR>
 " Hide tilde (sideeffect - hides all special symbols)
 hi NonText ctermfg=235
 
 " Terminal
-nnoremap <leader>t :below 15sp term:///bin/bash<cr>i
+nnoremap <leader>te :below 15sp term:///bin/bash<cr>i
 tnoremap <F1> <C-\><C-n>
-
-" QuickLook in CtrlP
-let g:ctrlp_buffer_func = { 'enter': 'CtrlpMaps' }
-
-func! CtrlpMaps()
-    nnoremap <buffer> <silent> <c-q> :call <sid>QuickLook()<cr>
-endfunc
-
-func! s:QuickLook()
-    let line = getline('.')
-    let l:path = getcwd() . substitute(line, '> ', '/', "")
-    call system("qlmanage -p 2>/dev/null '" . path . "'")
-endfunc
 
 vnoremap // y/<C-R>"<CR>
 " True Color for iTerm2
@@ -504,7 +514,7 @@ endif
 " LLDB
 let g:lldb#sign#bp_symbol = ''
 let g:lldb#sign#pc_symbol = ''
-highlight LLSelectedPCLine ctermfg=235 ctermbg=235
+" highlight LLSelectedPCLine ctermfg=235 ctermbg=235
 nmap <Leader>ll :LLsession new<CR>
 nmap <Leader>md :LLmode debug<CR>
 nmap <Leader>mc :LLmode code<CR>
@@ -517,7 +527,9 @@ nnoremap <S-F5> :LL process interrupt<CR>
 nnoremap \bd :%!python -m base64 -d<CR>:set ft=xml<CR>:%!xmllint --format -<CR>
 
 " Paste fast in terminal from clipboard
-nnoremap <S-F12> :read !pbpaste<CR>
+nnoremap <F20> :read !pbpaste<CR>
+nnoremap <Leader>th :%!html2haml --erb<CR>:set ft=haml<CR>
+vnoremap <Leader>th :'<,'>%!html2haml --erb<CR>:set ft=haml<CR>
 
 " XML format
 nmap <Leader>pxa :%!xmllint --format -<CR>
@@ -530,9 +542,9 @@ map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " Clamp
-let g:clamp_libclang_file = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
-let g:clamp_highlight_mode = 1
-let g:clamp_autostart = 0
+"let g:clamp_libclang_file = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
+"let g:clamp_highlight_mode = 1
+"let g:clamp_autostart = 0
 
 " tagbar
 "nmap <F8> :TagbarToggle<CR>
@@ -552,7 +564,13 @@ let g:clamp_autostart = 0
 "  \ }
 
 nnoremap <leader>c :cclose<bar>lclose<cr>
+"nnoremap <leader>l :cclose<bar>lclose<cr>
 
+if executable('ag')
+  let &grepprg = 'ag --nogroup --nocolor --column'
+else
+  let &grepprg = 'grep -rn $* *'
+endif
 " ============================================================================
 " FZF {{{
 " ============================================================================
@@ -560,15 +578,31 @@ nnoremap <leader>c :cclose<bar>lclose<cr>
 if has('nvim')
   let $FZF_DEFAULT_OPTS .= ' --inline-info'
   let g:fzf_layout = { 'down': '~60%' }
+  " let $TERM='xterm-truecolor'
   "let $FZF_TMUX_HEIGHT = '80%'
   " let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
 endif
 
+let s:ag_options = ' --smart-case '
+
+  command! -bang -nargs=* Ag
+        \ call fzf#vim#ag(
+        \   <q-args>,
+        \   s:ag_options,
+        \  <bang>0 ? fzf#vim#with_preview('up:60%')
+        \        : fzf#vim#with_preview('right:50%:hidden', '?'),
+        \   <bang>0
+        \ )
+
 " File preview using CodeRay (http://coderay.rubychan.de/)
 "let g:fzf_files_options =
 "  \ '--preview "(coderay {} || cat {}) 2> /dev/null | head -'.&lines.'"'
+" let g:fzf_files_options =
+           " \ '--preview "~/truecol2.sh"'
 let g:fzf_files_options =
-  \ '--preview "(termpix --height '.&lines.' {} || cat {}) 2> /dev/null "'
+            \ '--preview "(~/dev/termpix/bin/termpix --width 50 {} || cat {}) 2> /dev/null "'
+"let g:fzf_files_options =
+"            \ '--preview "(~/termpix.sh {} || (/Users/fimkap/Library/Developer/Xcode/DerivedData/Prevu-ficuumkuhdwwrxeimggukjtxinxw/Build/Products/Debug/Prevu.app/Contents/MacOS/Prevu {} > /dev/null 2>&1 &)) 2> /dev/null"'
 
 " nnoremap <silent> <Leader><Leader> :Files<CR>
 nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
@@ -597,3 +631,45 @@ command! Plugs call fzf#run({
   \ 'sink':    'Explore'})
 
 " }}}
+
+"autocmd VimEnter * command! -bang -nargs=* Ag
+"  \ call fzf#vim#ag(<q-args>,
+"  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+"  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+"  \                 <bang>0)
+
+let g:codi#interpreters = {
+            \ 'swift': {
+            \ 'bin': 'swift',
+            \ 'prompt': '\w\+\d\+> ',
+            \ },
+            \ }
+
+autocmd! BufWritePost *.rb,*.erb,*.haml Neomake
+
+nmap <Leader>co :Econtroller<CR>
+nmap <Leader>mo :Emodel<CR>
+nmap <Leader>vi :Eview<CR>
+nmap <Leader>sc :Eschema<CR>
+
+let g:deoplete#enable_at_startup=1
+
+"let g:table_mode_separator = '│'
+let g:table_mode_fillchar = '━'
+let g:table_mode_corner = '┿'
+let g:terminal_scrollback_buffer_size = 10000
+
+nmap <Leader>gs :Gstatus<CR>
+
+" let g:deoplete#enable_at_startup=1
+" let g:deoplete#sources#swift#daemon_autostart = 1
+
+" call autocomplete_swift#use_toolchain('Swift_3_0')
+" let g:deoplete#sources = {}
+" let g:deoplete#sources.swift = ['buffer', 'swift']
+
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>\<cr>" : "\<cr>"
+" imap <buffer> <tab>  <Plug>CompletorSwiftJumpToPlaceholder
+" map  <buffer> <tab>  <Plug>CompletorSwiftJumpToPlaceholder
