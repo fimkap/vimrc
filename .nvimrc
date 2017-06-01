@@ -75,9 +75,25 @@ Plug 'alvan/vim-closetag'
 " Plug 'osyo-manga/vim-monster'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'othree/html5.vim'
+Plug 'othree/yajs.vim', { 'for' : 'javascript' }
+Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'othree/jsdoc-syntax.vim'
+Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
+Plug 'pangloss/vim-javascript'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 " Plug 'tpope/vim-sleuth'
+
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+augroup nerd_loader
+  autocmd!
+  autocmd VimEnter * silent! autocmd! FileExplorer
+  autocmd BufEnter,BufNew *
+        \  if isdirectory(expand('<amatch>'))
+        \|   call plug#load('nerdtree')
+        \|   execute 'autocmd! nerd_loader'
+        \| endif
+augroup END
 " Plug 'landaire/deoplete-swift', { 'for' : 'swift' }
 " Plug 'mitsuse/autocomplete-swift'
 " Plug 'tomasr/molokai'
