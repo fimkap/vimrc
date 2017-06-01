@@ -77,6 +77,7 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'othree/html5.vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Plug 'tpope/vim-sleuth'
 " Plug 'landaire/deoplete-swift', { 'for' : 'swift' }
 " Plug 'mitsuse/autocomplete-swift'
 " Plug 'tomasr/molokai'
@@ -103,9 +104,9 @@ set completeopt=longest,menu
 set hls
 set is
 set diffopt=filler,vertical,iwhite
-set shiftwidth=2
-set tabstop=2
-set softtabstop=2
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
 set expandtab
 set report=1
 "set guifont=PT\ Mono:h12
@@ -274,9 +275,9 @@ let g:neomake_warning_sign = {
     \ 'texthl': 'NeomakeWarningSign',
     \ }
 
-let g:neomake_vim_enabled_makers = ['vint']
+" let g:neomake_vim_enabled_makers = ['vint']
 "autocmd! BufWritePost,BufEnter *.vim Neomake
-autocmd! BufWritePost *.vim Neomake
+" autocmd! BufWritePost *.vim Neomake
 
 " Syntastic Setup {{{
 " getbg function {{{
@@ -426,8 +427,10 @@ endfun
 ":command! -nargs=* -complete=file Ag Grepper! -tool ag -query <args> | vertical bo 50 copen
 "nmap gk :Grepper! -tool ag -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
 
-:command! -nargs=* -complete=file Look cex [] | vertical bo 50 copen | Grepper! -tool git -query <args>
-nmap gl :Grepper! -tool git -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
+:command! -nargs=* -complete=file Look cex [] | vertical bo 50 copen | Grepper -tool rg -query <args>
+nmap gl :Grepper -tool rg -query <C-R>=expand("<cword>")<CR><CR>:vertical bo 50 copen<CR>
+
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
 nmap <Leader>gl :silent Glog -10 --<CR>:cwindow<CR>
 
@@ -516,6 +519,7 @@ if executable('ag')
 else
   let &grepprg = 'grep -rn $* *'
 endif
+command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
 " ============================================================================
 " FZF {{{
 " ============================================================================
@@ -530,14 +534,14 @@ endif
 
 let s:ag_options = ' --smart-case '
 
-  command! -bang -nargs=* Ag
-        \ call fzf#vim#ag(
-        \   <q-args>,
-        \   s:ag_options,
-        \  <bang>0 ? fzf#vim#with_preview('up:60%')
-        \        : fzf#vim#with_preview('right:50%:hidden', '?'),
-        \   <bang>0
-        \ )
+  " command! -bang -nargs=* Ag
+  "       \ call fzf#vim#ag(
+  "       \   <q-args>,
+  "       \   s:ag_options,
+  "       \  <bang>0 ? fzf#vim#with_preview('up:60%')
+  "       \        : fzf#vim#with_preview('right:50%:hidden', '?'),
+  "       \   <bang>0
+  "       \ )
 
 " File preview using CodeRay (http://coderay.rubychan.de/)
 "let g:fzf_files_options =
