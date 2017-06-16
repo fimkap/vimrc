@@ -82,7 +82,14 @@ Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
 Plug 'pangloss/vim-javascript'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'padawan-php/deoplete-padawan', { 'do': 'composer install' }
+Plug 'blueyed/smarty.vim'
+" Plug 'blueyed/vim-diminactive'
 " Plug 'tpope/vim-sleuth'
+Plug 'tweekmonster/startuptime.vim'
+" Plug 'NLKNguyen/pipe.vim'
+" Plug 'NLKNguyen/pipe-mysql.vim'
+Plug 'gcorne/phpfolding.vim'
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 augroup nerd_loader
@@ -175,16 +182,21 @@ colorscheme apprentice
 
 " Git Gutter Setup
 let g:gitgutter_sign_column_always = 1
-let g:gitgutter_sign_added = '▋ '
-let g:gitgutter_sign_modified = '▋ '
-let g:gitgutter_sign_removed = '▋ '
-let g:gitgutter_sign_modified_removed = '▋ '
+" let g:gitgutter_sign_added = '▋ '
+let g:gitgutter_sign_added = '┃ '
+let g:gitgutter_sign_modified = '┃ '
+let g:gitgutter_sign_modified_removed = '┃ '
+let g:gitgutter_sign_removed = ' '
+let g:gitgutter_sign_modified_removed = '┃ '
 "let g:gitgutter_highlight_lines    = 1
-highlight GitGutterAdd ctermbg=234 ctermfg=108 guibg=#e1f8e1 guifg=#e1f8e1
-"highlight GitGutterAdd ctermbg=237 ctermfg=237 guibg=#e1f8e1 guifg=#e1f8e1
-highlight GitGutterChange ctermbg=234 ctermfg=60 guibg=#ffb2ff guifg=#ffb2ff
-highlight GitGutterDelete ctermbg=234 ctermfg=131 guibg=#ff8080 guifg=#ff8080
-highlight GitGutterChangeDelete ctermbg=234 ctermfg=60 guibg=#00afff guifg=#00afff
+"highlight GitGutterAdd ctermbg=234 ctermfg=108 guibg=#e1f8e1 guifg=#e1f8e1
+highlight GitGutterChange ctermbg=234 ctermfg=60 guibg=#202020 guifg=#66004d
+highlight GitGutterDelete ctermbg=234 ctermfg=131 guibg=#202020 guifg=#660000
+highlight GitGutterChangeDelete ctermbg=234 ctermfg=60 guibg=#202020 guifg=#660029
+highlight GitGutterAdd ctermbg=Black ctermfg=Green guibg=#202020 guifg=#004d00
+" highlight GitGutterChange ctermbg=#282828 ctermfg=#001a66 guibg=#ffb2ff guifg=#ffb2ff
+" highlight GitGutterDelete ctermbg=#282828 ctermfg=#990000 guibg=#ff8080 guifg=#ff8080
+" highlight GitGutterChangeDelete ctermbg=#282828 ctermfg=#001a66 guibg=#00afff guifg=#00afff
 
 hi link taskpaperDone Type
 hi link taskpaperCancelled Type
@@ -279,8 +291,8 @@ let g:neomake_javascript_jshint_maker = {
 let g:neomake_javascript_enabled_makers = ['jshint']
 autocmd! BufWritePost,BufEnter *.js Neomake
 
-highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=White guibg=Red
-highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=White guibg=Yellow
+highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=#202020
+highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=#202020
 
 let g:neomake_error_sign = {
     \ 'text': '',
@@ -389,7 +401,7 @@ let g:bookmark_manage_per_buffer = 1
 "let g:bookmark_auto_save = 1
 let g:bookmark_sign = ''
 let g:bookmark_annotation_sign = ''
-highlight BookmarkSign ctermfg=27 guifg=DarkGoldenrod2
+highlight BookmarkSign ctermfg=27 guifg=DarkGoldenrod2 ctermbg=234
 
 " Goyo Setup {{{
 let g:goyo_margin_top = 2
@@ -464,6 +476,8 @@ nnoremap <BS> :e #<CR>
 " Hide tilde (sideeffect - hides all special symbols)
 hi NonText ctermfg=235
 
+" hi ColorColumn ctermbg=238 guibg=Gray
+
 " Terminal
 nnoremap <leader>te :below 15sp term:///bin/bash<cr>i
 tnoremap <F1> <C-\><C-n>
@@ -530,12 +544,22 @@ let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml"
 nnoremap <leader>c :cclose<bar>lclose<cr>
 "nnoremap <leader>l :cclose<bar>lclose<cr>
 
+let g:NERDTreeDirArrowExpandable=""
+let g:NERDTreeDirArrowCollapsible=""
+
 if executable('ag')
   let &grepprg = 'ag --nogroup --nocolor --column'
 else
   let &grepprg = 'grep -rn $* *'
 endif
 command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
+
+command! -bang -nargs=* Cs
+  \ call fzf#vim#grep(
+  \   'csearch -n '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
 " ============================================================================
 " FZF {{{
 " ============================================================================
@@ -565,7 +589,7 @@ let s:ag_options = ' --smart-case '
 " let g:fzf_files_options =
            " \ '--preview "~/truecol2.sh"'
 let g:fzf_files_options =
-            \ '--preview "(~/dev/termpix/bin/termpix --width 50 {} || cat {}) 2> /dev/null "'
+            \ '--preview "(termpix --width 50 {} || cat {}) 2> /dev/null "'
 "let g:fzf_files_options =
 "            \ '--preview "(~/termpix.sh {} || (/Users/fimkap/Library/Developer/Xcode/DerivedData/Prevu-ficuumkuhdwwrxeimggukjtxinxw/Build/Products/Debug/Prevu.app/Contents/MacOS/Prevu {} > /dev/null 2>&1 &)) 2> /dev/null"'
 
@@ -637,3 +661,6 @@ nmap <Leader>gs :Gstatus<CR>
 " inoremap <expr> <cr> pumvisible() ? "\<C-y>\<cr>" : "\<cr>"
 " imap <buffer> <tab>  <Plug>CompletorSwiftJumpToPlaceholder
 " map  <buffer> <tab>  <Plug>CompletorSwiftJumpToPlaceholder
+
+let g:UltiSnipsSnippetsDir = "~"
+let g:DisableAutoPHPFolding = 1
