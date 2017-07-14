@@ -59,6 +59,7 @@ Plug 'aklt/plantuml-syntax'
 Plug 'vim-scripts/DrawIt'
 Plug 'mickaobrien/vim-stackoverflow'
 Plug 'romainl/Apprentice', { 'branch': 'fancylines-and-neovim' }
+Plug 'jacoborus/tender.vim'
 Plug 'keith/swift.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -82,7 +83,8 @@ Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
 Plug 'pangloss/vim-javascript'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-Plug 'padawan-php/deoplete-padawan', { 'do': 'composer install' }
+" Plug 'padawan-php/deoplete-padawan', { 'do': 'composer install' }
+Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
 Plug 'blueyed/smarty.vim'
 " Plug 'blueyed/vim-diminactive'
 " Plug 'tpope/vim-sleuth'
@@ -90,6 +92,7 @@ Plug 'tweekmonster/startuptime.vim'
 " Plug 'NLKNguyen/pipe.vim'
 " Plug 'NLKNguyen/pipe-mysql.vim'
 Plug 'gcorne/phpfolding.vim'
+Plug 'stephpy/vim-php-cs-fixer'
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 augroup nerd_loader
@@ -143,6 +146,7 @@ autocmd BufNewFile,BufRead *.swift set filetype=swift
 let c_no_curly_error=1
 " find thw right way to cope with objc parenthesis red highlight 
 hi cParenError ctermbg=231
+set hid
 "hi DropboxSymbol ctermfg=27 ctermbg=White guibg=White guifg=RoyalBlue3
 "set laststatus=0
 "set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
@@ -173,7 +177,7 @@ fun! IsDropbox()
 endfun
 colorscheme apprentice
 "colorscheme newdelek
-"colorscheme default
+" colorscheme tender
 "let g:seoul256_background = 235
 "colors seoul256
 "hi! link Conceal Normal
@@ -190,10 +194,10 @@ let g:gitgutter_sign_removed = ' '
 let g:gitgutter_sign_modified_removed = '┃ '
 "let g:gitgutter_highlight_lines    = 1
 "highlight GitGutterAdd ctermbg=234 ctermfg=108 guibg=#e1f8e1 guifg=#e1f8e1
-highlight GitGutterChange ctermbg=234 ctermfg=60 guibg=#202020 guifg=#66004d
-highlight GitGutterDelete ctermbg=234 ctermfg=131 guibg=#202020 guifg=#660000
-highlight GitGutterChangeDelete ctermbg=234 ctermfg=60 guibg=#202020 guifg=#660029
-highlight GitGutterAdd ctermbg=Black ctermfg=Green guibg=#202020 guifg=#004d00
+highlight GitGutterChange ctermbg=234 ctermfg=60 guibg=#1b1b1b guifg=#66004d
+highlight GitGutterDelete ctermbg=234 ctermfg=131 guibg=#1b1b1b guifg=#660000
+highlight GitGutterChangeDelete ctermbg=234 ctermfg=60 guibg=#1b1b1b guifg=#660029
+highlight GitGutterAdd ctermbg=Black ctermfg=Green guibg=#1b1b1b guifg=#004d00
 " highlight GitGutterChange ctermbg=#282828 ctermfg=#001a66 guibg=#ffb2ff guifg=#ffb2ff
 " highlight GitGutterDelete ctermbg=#282828 ctermfg=#990000 guibg=#ff8080 guifg=#ff8080
 " highlight GitGutterChangeDelete ctermbg=#282828 ctermfg=#001a66 guibg=#00afff guifg=#00afff
@@ -203,13 +207,14 @@ hi link taskpaperCancelled Type
 
 " Airline Setup {{{
 let g:airline_theme = 'apprentice'
-"let g:airline_theme = 'papercolor'
+" let g:airline_theme = 'tender'
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 let g:airline#extensions#hunks#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#bufferline#enabled = 1
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.branch = ''
 let g:airline_left_sep = ' '
@@ -291,8 +296,8 @@ let g:neomake_javascript_jshint_maker = {
 let g:neomake_javascript_enabled_makers = ['jshint']
 autocmd! BufWritePost,BufEnter *.js Neomake
 
-highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=#202020
-highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=#202020
+highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=#1b1b1b
+highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=#1b1b1b
 
 let g:neomake_error_sign = {
     \ 'text': '',
@@ -302,6 +307,11 @@ let g:neomake_warning_sign = {
     \ 'text': '',
     \ 'texthl': 'NeomakeWarningSign',
     \ }
+
+let g:neomake_php_phpcs_args_standard = "PSR2"
+let g:neomake_php_enabled_makers = ['php', 'phpcs']
+" let g:neomake_php_enabled_makers = ['php']
+autocmd! BufWritePost *.php Neomake
 
 " let g:neomake_vim_enabled_makers = ['vint']
 "autocmd! BufWritePost,BufEnter *.vim Neomake
@@ -401,7 +411,7 @@ let g:bookmark_manage_per_buffer = 1
 "let g:bookmark_auto_save = 1
 let g:bookmark_sign = ''
 let g:bookmark_annotation_sign = ''
-highlight BookmarkSign ctermfg=27 guifg=DarkGoldenrod2 ctermbg=234
+highlight BookmarkSign ctermfg=27 guifg=#0099ff ctermbg=234 guibg=#1b1b1b
 
 " Goyo Setup {{{
 let g:goyo_margin_top = 2
@@ -506,7 +516,7 @@ nnoremap <F5> :LL continue<CR>
 nnoremap <S-F5> :LL process interrupt<CR>
 
 " Base64 decode and pretty print in XML
-nnoremap \bd :%!python -m base64 -d<CR>:set ft=xml<CR>:%!xmllint --format -<CR>
+" nnoremap \bd :%!python -m base64 -d<CR>:set ft=xml<CR>:%!xmllint --format -<CR>
 
 " Paste fast in terminal from clipboard
 nnoremap <F20> :read !pbpaste<CR>
@@ -515,6 +525,8 @@ vnoremap <Leader>th :'<,'>%!html2haml --erb<CR>:set ft=haml<CR>
 
 " XML format
 nmap <Leader>pxa :%!xmllint --format -<CR>
+" JSON format
+nmap <Leader>jf :%!python -m json.tool<CR>
 
 " Stack Overflow
 nmap <Leader>so :StackOverflow <C-R>=expand("<cword>")<CR><CR>
@@ -523,7 +535,7 @@ map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans
 \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
-let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml"
+let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml,*.tpl,*.php,*.js"
 " tagbar
 "nmap <F8> :TagbarToggle<CR>
 "let g:tagbar_type_swift = {
@@ -649,12 +661,19 @@ let g:terminal_scrollback_buffer_size = 10000
 
 nmap <Leader>gs :Gstatus<CR>
 
+let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
+let g:deoplete#ignore_sources.php = ['omni']
+" let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
+" let g:deoplete#ignore_sources.php = ['phpcd', 'omni']
+
 " let g:deoplete#enable_at_startup=1
 " let g:deoplete#sources#swift#daemon_autostart = 1
 
 " call autocomplete_swift#use_toolchain('Swift_3_0')
 " let g:deoplete#sources = {}
 " let g:deoplete#sources.swift = ['buffer', 'swift']
+" let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
+" let g:deoplete#ignore_sources.php = ['omni']
 
 " inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
@@ -664,3 +683,5 @@ nmap <Leader>gs :Gstatus<CR>
 
 let g:UltiSnipsSnippetsDir = "~"
 let g:DisableAutoPHPFolding = 1
+
+autocmd FileType php setlocal commentstring=//%s
