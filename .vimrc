@@ -9,49 +9,69 @@ endif
 call plug#begin('~/.vim/plugged')
 Plug 'fimkap/swift-apple-utils'
 Plug 'jacoborus/tender.vim'
-Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'maralla/completor.vim'
-Plug 'maralla/completor-swift'
+Plug 'maralla/completor-swift', { 'for': 'swift' }
 Plug 'ervandew/supertab'
-Plug 'neomake/neomake'
-Plug 'vim-airline/vim-airline'
+Plug 'neomake/neomake' | Plug 'fimkap/neomake-swift', { 'for': 'swift' }
+Plug 'inside/vim-search-pulse'
+"Plug 'vim-airline/vim-airline'
+"Plug 'rafi/vim-badge'
 call plug#end()
 
 set nobackup
 set nowritebackup
 set noswapfile
 syntax enable
-set nu
-set rnu
+" set nu
+" set rnu
 set signcolumn=yes
 set mouse=a
+set ignorecase
+set shortmess+=c
 
-colorscheme deep-space
-"colorscheme tender
+" Change cursor shape on insert (no need in NeoVim)
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+"colorscheme deep-space
+colorscheme tender
 set guifont=SourceCodePro+Powerline+Awesome\ Regular:h14
+hi SignColumn guibg=#282828
+hi PmenuSbar guifg=#d3b987 ctermfg=180 guibg=#73cef4 ctermbg=180 gui=NONE cterm=NONE
+hi PmenuThumb guifg=#ffc24b ctermfg=215 guibg=Black ctermbg=215 gui=NONE cterm=NONE
+hi EndOfBuffer guibg=bg guifg=bg
 
-let g:airline_theme = 'deep_space'
+"set rulerformat=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
+"set rulerformat=%30(%{fugitive#head(7)}\ %c%V\ %p%%%)
+set ruler
+set hidden
+
+let g:completor_refresh_always = 0
+
+"let g:airline_theme = 'deep_space'
 "let g:airline_theme = 'tender'
-let g:airline_powerline_fonts = 0
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-let g:airline#extensions#hunks#enabled = 0
-let g:airline#extensions#whitespace#enabled = 0
-let g:airline#extensions#bufferline#enabled = 1
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.branch = ''
-let g:airline_left_sep = ' '
-let g:airline_left_alt_sep = ' '
-let g:airline_right_sep = ' '
-let g:airline_right_alt_sep = ' '
-let g:airline_section_a = ''
+"let g:airline_powerline_fonts = 0
+"if !exists('g:airline_symbols')
+"  let g:airline_symbols = {}
+"endif
+"let g:airline#extensions#hunks#enabled = 0
+"let g:airline#extensions#whitespace#enabled = 0
+"let g:airline#extensions#bufferline#enabled = 1
+"let g:airline_symbols.readonly = ''
+"let g:airline_symbols.branch = ''
+"let g:airline_left_sep = ' '
+"let g:airline_left_alt_sep = ' '
+"let g:airline_right_sep = ' '
+"let g:airline_right_alt_sep = ' '
+"let g:airline_section_a = ''
 
 let g:NERDTreeDirArrowExpandable=""
 let g:NERDTreeDirArrowCollapsible=""
+let NERDTreeMinimalUI = 1
 
 set termguicolors
 
@@ -64,40 +84,11 @@ autocmd BufNewFile,BufRead *.swift set filetype=swift
 nmap <tab> <Plug>CompletorSwiftJumpToPlaceholder
 
 nnoremap <BS> :e #<CR>
-"set laststatus=2
+set laststatus=0
 "set statusline+=%o
 
-" Swift maker.
-let swift_dic = {}
-if filereadable('.neomake_swift')
-    let lines = readfile('.neomake_swift')
-    for line in lines
-        let len = strlen(line)
-        let eq_position = match(line, '=')
-        let key = strpart(line, 0, eq_position)
-        let value = strpart(line, eq_position+1, len)
-        let swift_dic[key] = value
-    endfor
-endif
-if !has_key(swift_dic, 'sdk')
-    let swift_dic['sdk'] = system('xcrun --show-sdk-path')
-endif
-let swift_args = ['-frontend','-c'] + (has_key(swift_dic,'files') ?  split(expand(swift_dic['files'])) : []) + ['-sdk'] + split(swift_dic['sdk']) + (has_key(swift_dic,'target') ? ['-target'] + split(swift_dic['target']) : []) + ['-parse','-primary-file']
-
-let g:neomake_swift_swiftc_maker = {
-        \ 'exe' : 'swift',
-        \ 'args': swift_args,
-        \ 'errorformat':
-            \ '%E%f:%l:%c: error: %m,' .
-            \ '%W%f:%l:%c: warning: %m,' .
-            \ '%Z%\s%#^~%#,' .
-            \ '%-G%.%#',
-        \ }
-let g:neomake_swift_enabled_makers = ['swiftc']
-autocmd! BufWritePost *.swift Neomake
-
-hi NeomakeErrorSign guibg=#1b1f29 guifg=#ff0000
-hi NeomakeWarningSign guibg=#1b1f29 guifg=#ffff00
+hi NeomakeErrorSign guibg=#282828 guifg=#ff0000
+hi NeomakeWarningSign guibg=#282828 guifg=#ffff00
 let g:neomake_error_sign = {
     \ 'text': '',
     \ 'texthl': 'NeomakeErrorSign',
@@ -106,3 +97,5 @@ let g:neomake_warning_sign = {
     \ 'text': '',
     \ 'texthl': 'NeomakeWarningSign',
     \ }
+
+let g:vim_search_pulse_mode = 'pattern'
