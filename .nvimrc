@@ -60,6 +60,8 @@ Plug 'vim-scripts/DrawIt'
 Plug 'mickaobrien/vim-stackoverflow'
 Plug 'romainl/Apprentice', { 'branch': 'fancylines-and-neovim' }
 Plug 'jacoborus/tender.vim'
+Plug 'rakr/vim-one'
+Plug 'frankier/neovim-colors-solarized-truecolor-only'
 Plug 'keith/swift.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -83,6 +85,7 @@ Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
 Plug 'pangloss/vim-javascript'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Plug 'ujihisa/neco-look'
 " Plug 'padawan-php/deoplete-padawan', { 'do': 'composer install' }
 Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
 Plug 'blueyed/smarty.vim'
@@ -93,6 +96,10 @@ Plug 'tweekmonster/startuptime.vim'
 " Plug 'NLKNguyen/pipe-mysql.vim'
 Plug 'gcorne/phpfolding.vim'
 Plug 'stephpy/vim-php-cs-fixer'
+Plug 'jreybert/vimagit'
+Plug 'majutsushi/tagbar'
+Plug 'beloglazov/vim-online-thesaurus'
+Plug 'eugen0329/vim-esearch'
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 augroup nerd_loader
@@ -116,10 +123,13 @@ call plug#end()
 let mapleader      = ' '
 let maplocalleader = ' '
 
+filetype plugin indent on
+
 set nobackup
 set nowritebackup
 set noswapfile
 set autoread
+set signcolumn=yes
 " Change sensible; wildmode default has been changed in 0.1
 set nowildmenu
 set wildmode=list:longest,full
@@ -176,6 +186,8 @@ fun! IsDropbox()
     return ''
 endfun
 colorscheme apprentice
+" colorscheme one
+" set background=light
 "colorscheme newdelek
 " colorscheme tender
 "let g:seoul256_background = 235
@@ -185,19 +197,19 @@ colorscheme apprentice
 "au VimEnter * set laststatus=0
 
 " Git Gutter Setup
-let g:gitgutter_sign_column_always = 1
+" let g:gitgutter_sign_column_always = 1
 " let g:gitgutter_sign_added = '▋ '
 let g:gitgutter_sign_added = '┃ '
 let g:gitgutter_sign_modified = '┃ '
 let g:gitgutter_sign_modified_removed = '┃ '
-let g:gitgutter_sign_removed = ' '
+let g:gitgutter_sign_removed = '┃ '
 let g:gitgutter_sign_modified_removed = '┃ '
 "let g:gitgutter_highlight_lines    = 1
 "highlight GitGutterAdd ctermbg=234 ctermfg=108 guibg=#e1f8e1 guifg=#e1f8e1
-highlight GitGutterChange ctermbg=234 ctermfg=60 guibg=#1b1b1b guifg=#66004d
-highlight GitGutterDelete ctermbg=234 ctermfg=131 guibg=#1b1b1b guifg=#660000
-highlight GitGutterChangeDelete ctermbg=234 ctermfg=60 guibg=#1b1b1b guifg=#660029
-highlight GitGutterAdd ctermbg=Black ctermfg=Green guibg=#1b1b1b guifg=#004d00
+highlight GitGutterChange ctermbg=234 ctermfg=60 guibg=bg guifg=#66004d
+highlight GitGutterDelete ctermbg=234 ctermfg=131 guibg=bg guifg=#660000
+highlight GitGutterChangeDelete ctermbg=234 ctermfg=60 guibg=bg guifg=#660029
+highlight GitGutterAdd ctermbg=Black ctermfg=Green guibg=bg guifg=#004d00
 " highlight GitGutterChange ctermbg=#282828 ctermfg=#001a66 guibg=#ffb2ff guifg=#ffb2ff
 " highlight GitGutterDelete ctermbg=#282828 ctermfg=#990000 guibg=#ff8080 guifg=#ff8080
 " highlight GitGutterChangeDelete ctermbg=#282828 ctermfg=#001a66 guibg=#00afff guifg=#00afff
@@ -207,6 +219,7 @@ hi link taskpaperCancelled Type
 
 " Airline Setup {{{
 let g:airline_theme = 'apprentice'
+" let g:airline_theme = 'one'
 " let g:airline_theme = 'tender'
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
@@ -260,35 +273,6 @@ let g:neomake_objc_clang_maker = {
 let g:neomake_objc_enabled_makers = ['clang']
 "autocmd! BufWritePost objc Neomake
 
-" Swift maker. To be moved and based on swift filetype.
-let swift_dic = {}
-if filereadable('.neomake_swift')
-    let lines = readfile('.neomake_swift')
-    for line in lines
-        let len = strlen(line)
-        let eq_position = match(line, '=')
-        let key = strpart(line, 0, eq_position)
-        let value = strpart(line, eq_position+1, len)
-        let swift_dic[key] = value
-    endfor
-endif
-if !has_key(swift_dic, 'sdk')
-    let swift_dic['sdk'] = system('xcrun --show-sdk-path')
-endif
-let swift_args = ['-frontend','-c'] + (has_key(swift_dic,'files') ?  split(expand(swift_dic['files'])) : []) + ['-sdk'] + split(swift_dic['sdk']) + (has_key(swift_dic,'target') ? ['-target'] + split(swift_dic['target']) : []) + ['-parse','-primary-file']
-
-let g:neomake_swift_swiftc_maker = {
-        \ 'exe' : 'swift',
-        \ 'args': swift_args,
-        \ 'errorformat':
-            \ '%E%f:%l:%c: error: %m,' .
-            \ '%W%f:%l:%c: warning: %m,' .
-            \ '%Z%\s%#^~%#,' .
-            \ '%-G%.%#',
-        \ }
-let g:neomake_swift_enabled_makers = ['swiftc']
-autocmd! BufWritePost *.swift Neomake
-
 let g:neomake_javascript_jshint_maker = {
     \ 'args': ['--verbose'],
     \ 'errorformat': '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
@@ -296,8 +280,8 @@ let g:neomake_javascript_jshint_maker = {
 let g:neomake_javascript_enabled_makers = ['jshint']
 autocmd! BufWritePost,BufEnter *.js Neomake
 
-highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=#1b1b1b
-highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=#1b1b1b
+highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=bg
+highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=bg
 
 let g:neomake_error_sign = {
     \ 'text': '',
@@ -411,7 +395,8 @@ let g:bookmark_manage_per_buffer = 1
 "let g:bookmark_auto_save = 1
 let g:bookmark_sign = ''
 let g:bookmark_annotation_sign = ''
-highlight BookmarkSign ctermfg=27 guifg=#0099ff ctermbg=234 guibg=#1b1b1b
+highlight BookmarkSign ctermfg=27 guifg=#0099ff ctermbg=234 guibg=bg
+highlight BookmarkAnnotationSign ctermfg=27 guifg=#0099ff ctermbg=234 guibg=bg
 
 " Goyo Setup {{{
 let g:goyo_margin_top = 2
@@ -630,6 +615,8 @@ command! Plugs call fzf#run({
   \ 'down':    '~40%',
   \ 'sink':    'Explore'})
 
+nnoremap g] :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
+
 " }}}
 
 "autocmd VimEnter * command! -bang -nargs=* Ag
@@ -661,8 +648,15 @@ let g:terminal_scrollback_buffer_size = 10000
 
 nmap <Leader>gs :Gstatus<CR>
 
-let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
-let g:deoplete#ignore_sources.php = ['omni']
+" let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
+" let g:deoplete#ignore_sources.php = ['omni']
+" let g:deoplete#sources = {}
+" let g:deoplete#sources._ = ['buffer', 'file']
+" let g:deoplete#sources.php = ['phpcd']
+" let g:deoplete#sources.javascript = ['ternjs']
+let g:deoplete#sources#ternjs#types = 1
+let g:deoplete#sources#ternjs#docs = 1
+
 " let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
 " let g:deoplete#ignore_sources.php = ['phpcd', 'omni']
 
@@ -685,3 +679,16 @@ let g:UltiSnipsSnippetsDir = "~"
 let g:DisableAutoPHPFolding = 1
 
 autocmd FileType php setlocal commentstring=//%s
+
+nmap <Leader>nt :NERDTreeToggle<CR>
+nmap <Leader>tb :TagbarToggle<CR>
+
+hi EndOfBuffer guibg=bg guifg=bg
+hi VertSplit guibg=bg guifg=bg
+hi LineNr guibg=bg
+hi SignColumn guibg=bg
+
+" file deploy
+" nmap <Leader>fd :term scp % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
+nmap <Leader>fd :term rsync -avzh --rsync-path="sudo rsync" % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
+nmap <Leader>ofd :term rsync -avzh --rsync-path="sudo rsync" % efim@oscommerce.payapi.xyz:/var/www/html/%:h<CR>
