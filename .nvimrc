@@ -21,7 +21,7 @@ Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-sensible'
+" Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-characterize'
@@ -74,6 +74,7 @@ Plug 'jreybert/vimagit'
 " Plug 'majutsushi/tagbar'
 " Plug 'beloglazov/vim-online-thesaurus'
 Plug 'eugen0329/vim-esearch'
+Plug 'inside/vim-search-pulse'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 augroup nerd_loader
   autocmd!
@@ -105,7 +106,7 @@ set ic
 set smartcase
 set cpoptions+=$            " dollar sign while changing
 set completeopt=longest,menu
-set hls
+set nohls
 set is
 set diffopt=filler,vertical,iwhite
 set shiftwidth=4
@@ -121,6 +122,7 @@ set mousemodel=extend
 set mouse=a
 autocmd BufNewFile,BufRead *.swift set filetype=swift
 set hid
+set shortmess+=c
 colorscheme apprentice
 
 " Git Gutter Setup
@@ -198,7 +200,11 @@ let g:goyo_margin_bottom = 2
 
 nnoremap <leader>G :Goyo<CR>
 nmap     <Leader>gs :Gstatus<CR>gg<c-n>
-nnoremap <Leader>d :Gdiff<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+" diff all
+nnoremap <Leader>da :windo diffthis<CR>
+" diff off (for all open windows)
+nnoremap <Leader>do :windo diffoff<CR>
 " }}}
 
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
@@ -349,7 +355,12 @@ hi VertSplit guibg=bg guifg=bg
 hi LineNr guibg=bg
 hi SignColumn guibg=bg
 
+" hi Search guibg=bg guifg=fg
+let g:vim_search_pulse_mode = 'pattern'
+" let g:vim_search_pulse_color_list = ['#ffff1a', '#ffff33', '#ffff33', '#ffff33', '#ffff33']
+" let g:vim_search_pulse_duration = 400
+
 " file deploy
 " nmap <Leader>fd :term scp % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
-nmap <Leader>fd :term rsync -avzh --rsync-path="sudo rsync" % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
-nmap <Leader>ofd :term rsync -avzh --rsync-path="sudo rsync" % efim@oscommerce.payapi.xyz:/var/www/html/%:h<CR>
+nmap <Leader>fd :term rsync -avzh --rsync-path="sudo rsync" % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>i
+nmap <Leader>ofd :term rsync -avzh --rsync-path="sudo rsync" % efim@oscommerce.payapi.xyz:/var/www/html/%:h<CR>i
