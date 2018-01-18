@@ -72,7 +72,7 @@ Plug 'gcorne/phpfolding.vim'
 Plug 'stephpy/vim-php-cs-fixer'
 Plug 'jreybert/vimagit'
 " Plug 'majutsushi/tagbar'
-" Plug 'beloglazov/vim-online-thesaurus'
+Plug 'beloglazov/vim-online-thesaurus'
 Plug 'eugen0329/vim-esearch'
 Plug 'inside/vim-search-pulse'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -122,6 +122,8 @@ set mousemodel=extend
 set mouse=a
 autocmd BufNewFile,BufRead *.swift set filetype=swift
 set hid
+" enable max 100000 scrollback size in terminal
+set scrollback=-1
 set shortmess+=c
 colorscheme apprentice
 
@@ -289,6 +291,12 @@ let g:fzf_colors =
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
+autocmd! FileType fzf
+autocmd  FileType fzf set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+
+" command! Ag call fzf#vim#ag('query', {'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all'})
+
 " nnoremap <silent> <Leader><Leader> :Files<CR>
 nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
 nnoremap <silent> <Leader>C        :Colors<CR>
@@ -330,6 +338,7 @@ command! PlugHelp call fzf#run(fzf#wrap({
   \ 'sink':   function('s:plug_help_sink')}))
 
 let s:ag_options = ' --smart-case '
+command! -bang -nargs=+ -complete=dir Rag call fzf#vim#ag_raw(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 let g:deoplete#enable_at_startup=1
 
@@ -342,6 +351,8 @@ let g:deoplete#sources#ternjs#docs = 1
 
 let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
 let g:deoplete#ignore_sources.php = ['omni']
+let g:deoplete#sources = {}
+let g:deoplete#sources.javascript = ['buffer', 'tern']
 
 let g:UltiSnipsSnippetsDir = "~"
 let g:DisableAutoPHPFolding = 1
