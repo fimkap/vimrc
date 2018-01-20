@@ -9,6 +9,7 @@ endif
 call plug#begin('~/.vim/plugged')
 Plug 'fimkap/swift-apple-utils'
 Plug 'jacoborus/tender.vim'
+Plug 'rakr/vim-one'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -17,6 +18,11 @@ Plug 'maralla/completor-swift', { 'for': 'swift' }
 Plug 'ervandew/supertab'
 Plug 'neomake/neomake' | Plug 'fimkap/neomake-swift', { 'for': 'swift' }
 Plug 'inside/vim-search-pulse'
+Plug 'reedes/vim-wordy'
+Plug 'ap/vim-css-color'
+Plug 'othree/csscomplete.vim'
+Plug 'othree/html5.vim'
+Plug 'othree/html5-syntax.vim'
 "Plug 'vim-airline/vim-airline'
 "Plug 'rafi/vim-badge'
 call plug#end()
@@ -31,6 +37,10 @@ set signcolumn=yes
 set mouse=a
 set ignorecase
 set shortmess+=c
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+set expandtab
 
 " Change cursor shape on insert (no need in NeoVim)
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
@@ -38,7 +48,8 @@ let &t_SR = "\<Esc>]50;CursorShape=2\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
 "colorscheme deep-space
-colorscheme tender
+"colorscheme tender
+colorscheme one
 set guifont=SourceCodePro+Powerline+Awesome\ Regular:h14
 hi SignColumn guibg=#282828
 hi PmenuSbar guifg=#d3b987 ctermfg=180 guibg=#73cef4 ctermbg=180 gui=NONE cterm=NONE
@@ -99,3 +110,8 @@ let g:neomake_warning_sign = {
     \ }
 
 let g:vim_search_pulse_mode = 'pattern'
+
+let g:completor_clang_binary = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang'
+
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS noci
+let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
