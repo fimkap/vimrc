@@ -21,7 +21,7 @@ Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-sensible'
+" Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-characterize'
@@ -72,8 +72,9 @@ Plug 'gcorne/phpfolding.vim'
 Plug 'stephpy/vim-php-cs-fixer'
 Plug 'jreybert/vimagit'
 " Plug 'majutsushi/tagbar'
-" Plug 'beloglazov/vim-online-thesaurus'
+Plug 'beloglazov/vim-online-thesaurus'
 Plug 'eugen0329/vim-esearch'
+Plug 'inside/vim-search-pulse'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 augroup nerd_loader
   autocmd!
@@ -105,7 +106,7 @@ set ic
 set smartcase
 set cpoptions+=$            " dollar sign while changing
 set completeopt=longest,menu
-set hls
+set nohls
 set is
 set diffopt=filler,vertical,iwhite
 set shiftwidth=4
@@ -121,6 +122,9 @@ set mousemodel=extend
 set mouse=a
 autocmd BufNewFile,BufRead *.swift set filetype=swift
 set hid
+" enable max 100000 scrollback size in terminal
+set scrollback=-1
+set shortmess+=c
 colorscheme apprentice
 
 " Git Gutter Setup
@@ -198,7 +202,11 @@ let g:goyo_margin_bottom = 2
 
 nnoremap <leader>G :Goyo<CR>
 nmap     <Leader>gs :Gstatus<CR>gg<c-n>
-nnoremap <Leader>d :Gdiff<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+" diff all
+nnoremap <Leader>da :windo diffthis<CR>
+" diff off (for all open windows)
+nnoremap <Leader>do :windo diffoff<CR>
 " }}}
 
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
@@ -283,6 +291,12 @@ let g:fzf_colors =
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
+autocmd! FileType fzf
+autocmd  FileType fzf set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+
+" command! Ag call fzf#vim#ag('query', {'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all'})
+
 " nnoremap <silent> <Leader><Leader> :Files<CR>
 nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
 nnoremap <silent> <Leader>C        :Colors<CR>
@@ -324,6 +338,7 @@ command! PlugHelp call fzf#run(fzf#wrap({
   \ 'sink':   function('s:plug_help_sink')}))
 
 let s:ag_options = ' --smart-case '
+command! -bang -nargs=+ -complete=dir Rag call fzf#vim#ag_raw(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 let g:deoplete#enable_at_startup=1
 
@@ -336,6 +351,8 @@ let g:deoplete#sources#ternjs#docs = 1
 
 let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
 let g:deoplete#ignore_sources.php = ['omni']
+let g:deoplete#sources = {}
+let g:deoplete#sources.javascript = ['buffer', 'tern']
 
 let g:UltiSnipsSnippetsDir = "~"
 let g:DisableAutoPHPFolding = 1
@@ -349,7 +366,12 @@ hi VertSplit guibg=bg guifg=bg
 hi LineNr guibg=bg
 hi SignColumn guibg=bg
 
+" hi Search guibg=bg guifg=fg
+let g:vim_search_pulse_mode = 'pattern'
+" let g:vim_search_pulse_color_list = ['#ffff1a', '#ffff33', '#ffff33', '#ffff33', '#ffff33']
+" let g:vim_search_pulse_duration = 400
+
 " file deploy
 " nmap <Leader>fd :term scp % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
-nmap <Leader>fd :term rsync -avzh --rsync-path="sudo rsync" % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
-nmap <Leader>ofd :term rsync -avzh --rsync-path="sudo rsync" % efim@oscommerce.payapi.xyz:/var/www/html/%:h<CR>
+nmap <Leader>fd :term rsync -avzh --rsync-path="sudo rsync" % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>i
+nmap <Leader>ofd :term rsync -avzh --rsync-path="sudo rsync" % efim@oscommerce.payapi.xyz:/var/www/html/%:h<CR>i
