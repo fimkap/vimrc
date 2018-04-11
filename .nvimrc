@@ -64,6 +64,7 @@ Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
 Plug 'pangloss/vim-javascript'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'zchee/deoplete-jedi'
 Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
 Plug 'blueyed/smarty.vim'
 " Plug 'blueyed/vim-diminactive'
