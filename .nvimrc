@@ -371,8 +371,3 @@ hi SignColumn guibg=bg
 let g:vim_search_pulse_mode = 'pattern'
 " let g:vim_search_pulse_color_list = ['#ffff1a', '#ffff33', '#ffff33', '#ffff33', '#ffff33']
 " let g:vim_search_pulse_duration = 400
-
-" file deploy
-" nmap <Leader>fd :term scp % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
-nmap <Leader>fd :term rsync -avzh --rsync-path="sudo rsync" % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>i
-nmap <Leader>ofd :term rsync -avzh --rsync-path="sudo rsync" % efim@oscommerce.payapi.xyz:/var/www/html/%:h<CR>i
