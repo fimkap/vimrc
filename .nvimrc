@@ -1,17 +1,17 @@
 " VIM-PLUG Setup {{{
 
 " Automatic installation {{{
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !mkdir -p ~/.config/nvim/autoload
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  au VimEnter * PlugInstall
-endif
-" }}}
+" if empty(glob('~/.config/nvim/autoload/plug.vim'))
+"   silent !mkdir -p ~/.config/nvim/autoload
+"   silent !curl -fLo ~/.config/nvim/autoload/plug.vim
+"     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+"   au VimEnter * PlugInstall
+" endif
+" " }}}
 
-function! DoRemote(arg)
-  UpdateRemotePlugins
-endfunction
+" function! DoRemote(arg)
+"   UpdateRemotePlugins
+" endfunction
 
 call plug#begin('~/.config/nvim/plugged')
 
@@ -48,9 +48,9 @@ Plug 'romainl/Apprentice', { 'branch': 'fancylines-and-neovim' }
 Plug 'jacoborus/tender.vim'
 Plug 'rakr/vim-one'
 Plug 'tmhedberg/SimpylFold'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'idanarye/vim-merginal'
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
+" Plug 'idanarye/vim-merginal'
 " Plug 'junegunn/vim-pseudocl'
 " Plug 'junegunn/vim-oblique'
 Plug 'rust-lang/rust.vim'
@@ -62,10 +62,10 @@ Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'othree/jsdoc-syntax.vim'
 Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
 Plug 'pangloss/vim-javascript'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-Plug 'zchee/deoplete-jedi'
-Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Plug 'zchee/deoplete-jedi'
+" Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
 Plug 'blueyed/smarty.vim'
 " Plug 'blueyed/vim-diminactive'
 Plug 'tweekmonster/startuptime.vim'
@@ -87,7 +87,8 @@ augroup nerd_loader
         \| endif
 augroup END
 " }}}
-
+Plug 'will133/vim-dirdiff'
+Plug 'gabrielelana/vim-markdown'
 call plug#end()
 
 let mapleader      = ' '
@@ -116,7 +117,7 @@ set softtabstop=4
 set expandtab
 set report=1
 "set guifont=PT\ Mono:h12
-set guifont=SourceCodePro+Powerline+Awesome\ Regular:h12
+" set guifont=SourceCodePro+Powerline+Awesome\ Regular:h12
 set pumheight=15            " limit popup menu height
 set updatetime=750
 set mousemodel=extend
@@ -184,6 +185,8 @@ let g:neomake_php_phpcs_args_standard = "PSR2"
 let g:neomake_php_enabled_makers = ['php', 'phpcs']
 " let g:neomake_php_enabled_makers = ['php']
 autocmd! BufWritePost *.php Neomake
+
+autocmd! BufWritePost *.py Neomake
 
 let g:SuperTabDefaultCompletionType = '<c-x><c-n>'
 " autocmd! BufEnter *.cc,*.cpp let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
@@ -371,3 +374,10 @@ hi SignColumn guibg=bg
 let g:vim_search_pulse_mode = 'pattern'
 " let g:vim_search_pulse_color_list = ['#ffff1a', '#ffff33', '#ffff33', '#ffff33', '#ffff33']
 " let g:vim_search_pulse_duration = 400
+
+" file deploy
+" nmap <Leader>fd :term scp % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>
+" nmap <Leader>fd :term rsync -avzh --rsync-path="sudo rsync" % efim@130.211.92.37:/var/www/html/prestashop/modules/payapi/%:h<CR>i
+" nmap <Leader>ofd :term rsync -avzh --rsync-path="sudo rsync" % efim@oscommerce.payapi.xyz:/var/www/html/%:h<CR>i
+" let g:python_host_prog = "/home/efim/.pyenv/versions/neovim2/bin/python"
+" let g:python3_host_prog = "/home/efim/.pyenv/versions/neovim3/bin/python"
