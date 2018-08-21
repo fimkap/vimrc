@@ -115,3 +115,4 @@ let g:completor_clang_binary = '/Applications/Xcode.app/Contents/Developer/Toolc
 
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS noci
 let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
+" some comments
