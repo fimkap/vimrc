@@ -22,7 +22,7 @@ Plug 'reedes/vim-wordy'
 Plug 'ap/vim-css-color'
 Plug 'othree/csscomplete.vim'
 Plug 'othree/html5.vim'
-Plug 'othree/html5-syntax.vim'
+"Plug 'othree/html5-syntax.vim'
 "Plug 'vim-airline/vim-airline'
 "Plug 'rafi/vim-badge'
 call plug#end()
