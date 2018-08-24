@@ -88,6 +88,7 @@ augroup nerd_loader
 augroup END
 " }}}
 
+Plug 'gabrielelana/vim-markdown'
 call plug#end()
 
 let mapleader      = ' '
