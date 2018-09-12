@@ -14,7 +14,8 @@ Plug 'neomake/neomake'
 Plug 'artur-shaik/vim-javacomplete2'
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'maralla/completor.vim'
 call plug#end()
 let mapleader      = ' '
 let maplocalleader = ' '
@@ -29,7 +30,9 @@ set mouse=a
 set pumheight=15
 colorscheme one
 set background=dark
-let g:deoplete#enable_at_startup=1
+set noshowmode
+set signcolumn=yes
+"let g:deoplete#enable_at_startup=1
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 if has('termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -40,6 +43,7 @@ let g:python3_host_prog='/usr/bin/python3'
 let g:python_host_prog='/usr/bin/python'
 " When writing a buffer (no delay).
 call neomake#configure#automake('w')
+let g:completor_java_omni_trigger = '(\w+\.)$'
 " }}}
 " ============================================================================
 " FZF {{{
@@ -92,3 +96,15 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
 omap <leader><tab> <plug>(fzf-maps-o)
+
+highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=bg
+highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=bg
+
+let g:neomake_error_sign = {
+    \ 'text': '',
+    \ 'texthl': 'NeomakeErrorSign',
+    \ }
+let g:neomake_warning_sign = {
+    \ 'text': '',
+    \ 'texthl': 'NeomakeWarningSign',
+    \ }
