@@ -16,6 +16,10 @@ Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'maralla/completor.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'google/vim-maktaba'
+Plug 'google/vim-codefmt'
+Plug 'google/vim-glaive'
 call plug#end()
 let mapleader      = ' '
 let maplocalleader = ' '
@@ -32,6 +36,10 @@ colorscheme one
 set background=dark
 set noshowmode
 set signcolumn=yes
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+set expandtab
 "let g:deoplete#enable_at_startup=1
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 if has('termguicolors')
@@ -108,3 +116,9 @@ let g:neomake_warning_sign = {
     \ 'text': '',
     \ 'texthl': 'NeomakeWarningSign',
     \ }
+
+" codefmt
+call glaive#Install()
+" Optional: Enable codefmt's default mappings on the <Leader>= prefix.
+Glaive codefmt plugin[mappings]
+Glaive codefmt google_java_executable="java -jar /root/google-java-format-1.6-all-deps.jar"
