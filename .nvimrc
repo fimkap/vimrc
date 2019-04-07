@@ -47,7 +47,7 @@ Plug 'fimkap/vim-mark'
 Plug 'romainl/Apprentice', { 'branch': 'fancylines-and-neovim' }
 Plug 'jacoborus/tender.vim'
 Plug 'rakr/vim-one'
-Plug 'tmhedberg/SimpylFold'
+" Plug 'tmhedberg/SimpylFold'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'idanarye/vim-merginal'
@@ -65,6 +65,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'zchee/deoplete-jedi'
+Plug 'tweekmonster/deoplete-clang2'
 Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
 Plug 'blueyed/smarty.vim'
 " Plug 'blueyed/vim-diminactive'
@@ -89,6 +90,8 @@ augroup END
 " }}}
 
 Plug 'gabrielelana/vim-markdown'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
 let mapleader      = ' '
@@ -152,8 +155,10 @@ endif
 let g:airline#extensions#hunks#enabled = 0
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#bufferline#enabled = 1
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.branch = 'שׂ'
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.notexists = ''
 let g:airline_left_sep = ' '
 let g:airline_left_alt_sep = ' '
 let g:airline_right_sep = ' '
@@ -169,15 +174,17 @@ let g:neomake_javascript_jshint_maker = {
 let g:neomake_javascript_enabled_makers = ['jshint']
 autocmd! BufWritePost,BufEnter *.js Neomake
 
+call neomake#configure#automake('nwi', 750)
+
 highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=bg
 highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=bg
 
 let g:neomake_error_sign = {
-    \ 'text': '',
+    \ 'text': '◯',
     \ 'texthl': 'NeomakeErrorSign',
     \ }
 let g:neomake_warning_sign = {
-    \ 'text': '',
+    \ 'text': '△',
     \ 'texthl': 'NeomakeWarningSign',
     \ }
 
@@ -193,8 +200,8 @@ let g:SuperTabDefaultCompletionType = '<c-x><c-n>'
 let g:bookmark_save_per_working_dir = 1
 let g:bookmark_manage_per_buffer = 1
 "let g:bookmark_auto_save = 1
-let g:bookmark_sign = ''
-let g:bookmark_annotation_sign = ''
+let g:bookmark_sign = ''
+let g:bookmark_annotation_sign = ''
 highlight BookmarkSign ctermfg=27 guifg=#0099ff ctermbg=234 guibg=bg
 highlight BookmarkAnnotationSign ctermfg=27 guifg=#0099ff ctermbg=234 guibg=bg
 
@@ -248,8 +255,9 @@ let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml,*.tpl,*.php,*.js"
 
 nnoremap <leader>c :cclose<bar>lclose<cr>
 
-let g:NERDTreeDirArrowExpandable=""
-let g:NERDTreeDirArrowCollapsible=""
+let g:NERDTreeDirArrowExpandable=""
+let g:NERDTreeDirArrowCollapsible=""
+let NERDTreeMinimalUI = 1
 
 if executable('ag')
   let &grepprg = 'ag --nogroup --nocolor --column'
@@ -362,6 +370,7 @@ let g:DisableAutoPHPFolding = 1
 autocmd FileType php setlocal commentstring=//%s
 
 nmap <Leader>nt :NERDTreeToggle<CR>
+nnoremap <silent> <Leader>v :NERDTreeFind<CR>
 
 hi EndOfBuffer guibg=bg guifg=bg
 hi VertSplit guibg=bg guifg=bg
@@ -372,3 +381,6 @@ hi SignColumn guibg=bg
 let g:vim_search_pulse_mode = 'pattern'
 " let g:vim_search_pulse_color_list = ['#ffff1a', '#ffff33', '#ffff33', '#ffff33', '#ffff33']
 " let g:vim_search_pulse_duration = 400
+
+let g:python3_host_prog='/usr/local/bin/python3'
+let g:python_host_prog='/usr/bin/python'
