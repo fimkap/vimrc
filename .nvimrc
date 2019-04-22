@@ -62,6 +62,7 @@ Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'othree/jsdoc-syntax.vim'
 Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
 Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'zchee/deoplete-jedi'
@@ -92,6 +93,7 @@ augroup END
 Plug 'gabrielelana/vim-markdown'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'ryanoasis/vim-devicons'
+" Plug 'lambdalisue/vim-pyenv', {'for': 'python'}
 call plug#end()
 
 let mapleader      = ' '
@@ -167,12 +169,12 @@ let g:airline_right_alt_sep = ' '
 let g:airline_section_a = ''
 
 " Neomake Setup
-let g:neomake_javascript_jshint_maker = {
-    \ 'args': ['--verbose'],
-    \ 'errorformat': '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
-    \ }
-let g:neomake_javascript_enabled_makers = ['jshint']
-autocmd! BufWritePost,BufEnter *.js Neomake
+" let g:neomake_javascript_jshint_maker = {
+"     \ 'args': ['--verbose'],
+"     \ 'errorformat': '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
+"     \ }
+let g:neomake_javascript_enabled_makers = ['eslint']
+" autocmd! BufWritePost,BufEnter *.js Neomake
 
 call neomake#configure#automake('nwi', 750)
 
@@ -364,7 +366,7 @@ let g:deoplete#ignore_sources.php = ['omni']
 let g:deoplete#sources = {}
 let g:deoplete#sources.javascript = ['buffer', 'tern']
 
-let g:UltiSnipsSnippetsDir = "~"
+" let g:UltiSnipsSnippetsDir = "~"
 let g:DisableAutoPHPFolding = 1
 
 autocmd FileType php setlocal commentstring=//%s
