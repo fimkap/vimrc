@@ -40,6 +40,7 @@ Plug 'davidoc/taskpaper.vim'
 " Plug 'critiqjo/lldb.nvim'
 Plug 'junegunn/goyo.vim'
 Plug 'benekastah/neomake'
+" Plug 'w0rp/ale'
 Plug 'mhinz/vim-grepper'
 " Plug 'fimkap/objc_matchbracket'
 Plug 'tpope/vim-afterimage'
@@ -93,6 +94,7 @@ augroup END
 Plug 'gabrielelana/vim-markdown'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'ryanoasis/vim-devicons'
+Plug 'mhartington/oceanic-next'
 " Plug 'lambdalisue/vim-pyenv', {'for': 'python'}
 call plug#end()
 
@@ -115,7 +117,7 @@ set cpoptions+=$            " dollar sign while changing
 set completeopt=longest,menu
 set nohls
 set is
-set diffopt=filler,vertical,iwhite
+set diffopt=filler,vertical
 set shiftwidth=4
 set tabstop=4
 set softtabstop=4
@@ -132,7 +134,8 @@ set hid
 " enable max 100000 scrollback size in terminal
 set scrollback=-1
 set shortmess+=c
-colorscheme apprentice
+" colorscheme apprentice
+colorscheme OceanicNext
 
 " Git Gutter Setup
 let g:gitgutter_sign_added = '┃ '
@@ -149,7 +152,8 @@ hi link taskpaperDone Type
 hi link taskpaperCancelled Type
 
 " Airline Setup {{{
-let g:airline_theme = 'apprentice'
+let g:airline_theme = 'onedark'
+" let g:airline_theme = 'apprentice'
 let g:airline_powerline_fonts = 0
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -176,17 +180,20 @@ let g:airline_section_a = ''
 let g:neomake_javascript_enabled_makers = ['eslint']
 " autocmd! BufWritePost,BufEnter *.js Neomake
 
-call neomake#configure#automake('nwi', 750)
+call neomake#configure#automake('nwi', 400)
 
 highlight NeomakeErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=bg
 highlight NeomakeWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=bg
 
+highlight ALEErrorSign ctermfg=red ctermbg=234 guifg=#ff0000 guibg=bg
+highlight ALEWarningSign ctermfg=yellow ctermbg=234 guifg=#e6e600 guibg=bg
+
 let g:neomake_error_sign = {
-    \ 'text': '◯',
+    \ 'text': '',
     \ 'texthl': 'NeomakeErrorSign',
     \ }
 let g:neomake_warning_sign = {
-    \ 'text': '△',
+    \ 'text': '卑',
     \ 'texthl': 'NeomakeWarningSign',
     \ }
 
@@ -194,6 +201,9 @@ let g:neomake_php_phpcs_args_standard = "PSR2"
 let g:neomake_php_enabled_makers = ['php', 'phpcs']
 " let g:neomake_php_enabled_makers = ['php']
 autocmd! BufWritePost *.php Neomake
+
+let g:ale_sign_error = ''
+let g:ale_sign_warning = '卑'
 
 let g:SuperTabDefaultCompletionType = '<c-x><c-n>'
 " autocmd! BufEnter *.cc,*.cpp let g:SuperTabDefaultCompletionType = '<c-x><c-u>'
@@ -303,6 +313,9 @@ let g:fzf_colors =
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
+command! -bang -nargs=? -complete=dir GFiles
+  \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview(), <bang>0)
+
 autocmd! FileType fzf
 autocmd  FileType fzf set laststatus=0 noshowmode noruler
   \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
@@ -310,7 +323,7 @@ autocmd  FileType fzf set laststatus=0 noshowmode noruler
 " command! Ag call fzf#vim#ag('query', {'options': '--bind ctrl-a:select-all,ctrl-d:deselect-all'})
 
 " nnoremap <silent> <Leader><Leader> :Files<CR>
-nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":Files\<cr>"
+nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":GFiles\<cr>"
 nnoremap <silent> <Leader>C        :Colors<CR>
 nnoremap <silent> <Leader><Enter>  :Buffers<CR>
 nnoremap <silent> <Leader>l        :Lines<CR>
@@ -357,6 +370,7 @@ let g:deoplete#enable_at_startup=1
 let g:terminal_scrollback_buffer_size = 10000
 
 nmap <Leader>gs :Gstatus<CR>
+nmap <Leader>bm :bmodified<CR>
 
 let g:deoplete#sources#ternjs#types = 1
 let g:deoplete#sources#ternjs#docs = 1
@@ -385,4 +399,4 @@ let g:vim_search_pulse_mode = 'pattern'
 " let g:vim_search_pulse_duration = 400
 
 let g:python3_host_prog='/usr/local/bin/python3'
-let g:python_host_prog='/usr/bin/python'
+let g:python_host_prog='/usr/local/bin/python'
