@@ -17,11 +17,9 @@ call plug#begin('~/.config/nvim/plugged')
 
 " Plugins {{{
 Plug 'ervandew/supertab'
-" Plug 'Rip-Rip/clang_complete'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'tpope/vim-fugitive'
-" Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-characterize'
@@ -55,7 +53,8 @@ Plug 'idanarye/vim-merginal'
 " Plug 'junegunn/vim-pseudocl'
 " Plug 'junegunn/vim-oblique'
 Plug 'rust-lang/rust.vim'
-Plug 'metakirby5/codi.vim'
+" Plug 'metakirby5/codi.vim'
+Plug 'Pablo1107/codi.vim', { 'branch': 'nvim-virtual-text' }
 Plug 'alvan/vim-closetag'
 Plug 'othree/html5.vim'
 Plug 'othree/yajs.vim', { 'for' : 'javascript' }
@@ -68,6 +67,7 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'zchee/deoplete-jedi'
 Plug 'tweekmonster/deoplete-clang2'
+Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
 Plug 'blueyed/smarty.vim'
 " Plug 'blueyed/vim-diminactive'
@@ -95,6 +95,10 @@ Plug 'gabrielelana/vim-markdown'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mhartington/oceanic-next'
+Plug 'jph00/swift-apple'
+Plug 'google/yapf', { 'rtp': 'plugins/vim', 'for': 'python' }
+Plug 'vim-vdebug/vdebug'
+Plug 'justinmk/vim-dirvish'
 " Plug 'lambdalisue/vim-pyenv', {'for': 'python'}
 call plug#end()
 
@@ -267,8 +271,8 @@ let g:closetag_filenames = "*.xml,*.html,*.xhtml,*.phtml,*.tpl,*.php,*.js"
 
 nnoremap <leader>c :cclose<bar>lclose<cr>
 
-let g:NERDTreeDirArrowExpandable=""
-let g:NERDTreeDirArrowCollapsible=""
+" let g:NERDTreeDirArrowExpandable=""
+" let g:NERDTreeDirArrowCollapsible=""
 let NERDTreeMinimalUI = 1
 
 if executable('ag')
