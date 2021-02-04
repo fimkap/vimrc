@@ -19,6 +19,7 @@ call plug#begin('~/.config/nvim/plugged')
 " Plug 'ervandew/supertab'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'SirVer/ultisnips'
+Plug 'mlaursen/vim-react-snippets'
 Plug 'honza/vim-snippets'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-obsession'
@@ -28,34 +29,23 @@ Plug 'leafgarland/typescript-vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
-Plug 'godlygeek/tabular'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'qstrahl/vim-matchmaker'
-" Plug 'gregsexton/gitv'
-Plug 'davidoc/taskpaper.vim'
-" Plug 'critiqjo/lldb.nvim'
 Plug 'junegunn/goyo.vim'
 Plug 'benekastah/neomake'
-" Plug 'w0rp/ale'
 Plug 'mhinz/vim-grepper'
-" Plug 'fimkap/objc_matchbracket'
 Plug 'tpope/vim-afterimage'
 Plug 'fimkap/vim-mark'
-Plug 'romainl/Apprentice', { 'branch': 'fancylines-and-neovim' }
 Plug 'jacoborus/tender.vim'
 Plug 'rakr/vim-one'
 " Plug 'tmhedberg/SimpylFold'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'idanarye/vim-merginal'
-" Plug 'junegunn/vim-pseudocl'
-" Plug 'junegunn/vim-oblique'
 Plug 'rust-lang/rust.vim'
 Plug 'metakirby5/codi.vim'
-" Plug 'Pablo1107/codi.vim', { 'branch': 'nvim-virtual-text' }
 Plug 'alvan/vim-closetag'
 Plug 'othree/html5.vim'
 Plug 'othree/yajs.vim', { 'for' : 'javascript' }
@@ -64,47 +54,22 @@ Plug 'othree/jsdoc-syntax.vim'
 Plug 'othree/es.next.syntax.vim', { 'for' : 'javascript' }
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-" Plug 'zchee/deoplete-jedi'
-" Plug 'tweekmonster/deoplete-clang2'
-" Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
-Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
-Plug 'blueyed/smarty.vim'
-" Plug 'blueyed/vim-diminactive'
 Plug 'tweekmonster/startuptime.vim'
-Plug 'gcorne/phpfolding.vim'
-Plug 'stephpy/vim-php-cs-fixer'
 Plug 'jreybert/vimagit'
-" Plug 'majutsushi/tagbar'
-Plug 'beloglazov/vim-online-thesaurus'
 Plug 'eugen0329/vim-esearch'
 Plug 'inside/vim-search-pulse'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-augroup nerd_loader
-  autocmd!
-  autocmd VimEnter * silent! autocmd! FileExplorer
-  autocmd BufEnter,BufNew *
-        \  if isdirectory(expand('<amatch>'))
-        \|   call plug#load('nerdtree')
-        \|   execute 'autocmd! nerd_loader'
-        \| endif
-augroup END
-" }}}
-
 Plug 'gabrielelana/vim-markdown'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'ryanoasis/vim-devicons'
 Plug 'mhartington/oceanic-next'
 Plug 'jph00/swift-apple'
 Plug 'google/yapf', { 'rtp': 'plugins/vim', 'for': 'python' }
-Plug 'vim-vdebug/vdebug'
 Plug 'tell-k/vim-autopep8'
 Plug 'sheerun/vim-polyglot'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'kizza/actionmenu.nvim'
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'lambdalisue/vim-pyenv', {'for': 'python'}
+Plug 'kristijanhusak/defx-icons'
 call plug#end()
 
 let mapleader      = ' '
@@ -116,7 +81,7 @@ set nobackup
 set nowritebackup
 set noswapfile
 set autoread
-set signcolumn=yes
+set signcolumn=yes:2
 " Change sensible; wildmode default has been changed in 0.1
 set nowildmenu
 set wildmode=list:longest,full
@@ -143,11 +108,14 @@ set hid
 " enable max 100000 scrollback size in terminal
 set scrollback=-1
 set shortmess+=c
-set guicursor=n:hor10
+set guicursor=n:hor10,i-ci-ve:ver25
 " colorscheme apprentice
 colorscheme OceanicNext
 
+let g:UltiSnipsExpandTrigger=""
+
 " Git Gutter Setup
+let g:gitgutter_sign_priority = 50 
 let g:gitgutter_sign_added = '┃ '
 let g:gitgutter_sign_modified = '┃ '
 let g:gitgutter_sign_modified_removed = '┃ '
@@ -207,10 +175,10 @@ let g:neomake_warning_sign = {
     \ 'texthl': 'NeomakeWarningSign',
     \ }
 
-let g:neomake_php_phpcs_args_standard = "PSR2"
-let g:neomake_php_enabled_makers = ['php', 'phpcs']
+" let g:neomake_php_phpcs_args_standard = "PSR2"
+" let g:neomake_php_enabled_makers = ['php', 'phpcs']
 " let g:neomake_php_enabled_makers = ['php']
-autocmd! BufWritePost *.php Neomake
+" autocmd! BufWritePost *.php Neomake
 
 let g:ale_sign_error = ''
 let g:ale_sign_warning = '卑'
@@ -291,7 +259,7 @@ command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
 command! -bang -nargs=* Cs
   \ call fzf#vim#grep(
   \   'csearch -n '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \   <bang>0 ? fzf#vim#with_preview('up:80%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 " ============================================================================
@@ -299,9 +267,9 @@ command! -bang -nargs=* Cs
 " ============================================================================
 if has('nvim') || has('gui_running')
   let $FZF_DEFAULT_OPTS .= ' --inline-info'
-  let g:fzf_layout = { 'down': '~60%' }
 endif
 
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -589,7 +557,7 @@ function! s:defx_toggle_tree() abort
 	if defx#is_directory()
 		return defx#do_action('open_tree', ['nested', 'toggle'])
 	endif
-	return defx#do_action('multi', ['drop', 'quit'])
+	return defx#do_action('drop')
 endfunction
 
 function! s:defx_mappings() abort
@@ -625,7 +593,8 @@ function! s:defx_mappings() abort
 	nnoremap <silent><buffer><expr><nowait> r  defx#do_action('rename')
 	nnoremap <silent><buffer><expr> dd defx#do_action('remove_trash')
 	nnoremap <silent><buffer><expr> K  defx#do_action('new_directory')
-	nnoremap <silent><buffer><expr> N  defx#do_action('new_multiple_files')
+	nnoremap <silent><buffer><expr> N  defx#do_action('new_file')
+	nnoremap <silent><buffer><expr> M  defx#do_action('new_multiple_files')
 
 	" Jump
 	nnoremap <silent><buffer>  [g :<C-u>call <SID>jump_dirty(-1)<CR>
